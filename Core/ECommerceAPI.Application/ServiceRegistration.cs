@@ -1,10 +1,8 @@
-﻿using MediatR;
+﻿using ECommerceAPI.Application.Validatiors.ProductValidators;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ECommerceAPI.Application
 {
@@ -14,6 +12,11 @@ namespace ECommerceAPI.Application
         {
             service.AddMediatR(typeof(ServiceRegistration));
             service.AddAutoMapper(typeof(ServiceRegistration));
+
+           
+
+            service.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
+            service.AddValidatorsFromAssemblyContaining(typeof(CreateProductValidator));
         }
     }
 }

@@ -14,6 +14,6 @@ namespace ECommerceAPI.Application.Features.Queries.ProductQueries.GetAllProduct
         public decimal Price { get; set; }
         public int Quantity { get; set; }
         public bool Sale { get; set; }
-        public ICollection<ProductCategory> Categories { get; set; }
+        public ICollection<ProductCategory> Categoriess { get; set; }
     }
 }
