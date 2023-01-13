@@ -13,7 +13,7 @@ namespace ECommerceAPI.Persistence.Repositories.ProductRepositories
   
         }
 
-        public async Task<List<Product>> GetAllProductsAllPropertiesAsync(bool tracking = true)
+        public IQueryable<Product> GetAllProductsAllProperties(bool tracking = true)
         {
             IQueryable<Product> products = _dbSet
                 .Include(p => p.Categories).ThenInclude(p=>p.Category)
@@ -23,7 +23,7 @@ namespace ECommerceAPI.Persistence.Repositories.ProductRepositories
                 products.AsNoTracking();
             }
 
-            return await products.ToListAsync();
+            return  products;
         }
 
         public async Task<Product> GetByIdProductAllPropertiesAsync(string id, bool tracking = true)

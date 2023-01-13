@@ -36,10 +36,7 @@ namespace ECommerceAPI.Application.Validatiors.ProductValidators
                .Must(price => price >= 0)
                .WithMessage("Ürün adeti negatif olamaz !");
 
-            RuleFor(p => p.Sale)
-               .NotEmpty()
-               .NotNull()
-               .WithMessage("Ürün satış durumunu giriniz !");
+ 
               
 
         }

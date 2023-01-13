@@ -17,17 +17,18 @@ namespace ECommerceAPI.API.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IWebHostEnvironment _webHostEnviroment;
 
-        public ProductsController(IMediator mediator)
+        public ProductsController(IMediator mediator, IWebHostEnvironment webHostEnviroment)
         {
             _mediator = mediator;
+            _webHostEnviroment = webHostEnviroment;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllProducts()
+        public async Task<IActionResult> GetAllProducts([FromQuery]GetAllProductsQueryRequest getAllProductsQueryRequest)
         {
-            GetAllProductsQueryRequest getAllProductsQueryRequest = new();
-            return Ok(await _mediator.Send(getAllProductsQueryRequest));
+                    return Ok(await _mediator.Send(getAllProductsQueryRequest));
         }
 
         [HttpGet("{Id}")]
@@ -59,6 +60,30 @@ namespace ECommerceAPI.API.Controllers
         public async Task<IActionResult> AddProductToCategory(ProductAddToCategoryRequest productAddToCategoryRequest)
         {
             await _mediator.Send(productAddToCategoryRequest);
+            return Ok();
+        }
+
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Upload ()
+        {
+            string uploadPath = Path.Combine(_webHostEnviroment.WebRootPath, "resource/product-images");
+            if (!Directory.Exists(uploadPath))
+            {
+                Directory.CreateDirectory(uploadPath);
+            }
+
+            Random r = new();
+            foreach (IFormFile file in Request.Form.Files)
+            {
+                string fullPath = Path.Combine(uploadPath, $"{r.Next()}{Path.GetExtension(file.FileName)}");
+
+                using FileStream fileStream=new(fullPath,FileMode.Create,FileAccess.Write,FileShare.None,1024 * 1024, useAsync:false);
+
+                await file.CopyToAsync(fileStream);
+                await fileStream.FlushAsync();
+            }
+
             return Ok();
         }
 

@@ -8,7 +8,9 @@ using System.Threading.Tasks;
 
 namespace ECommerceAPI.Application.Features.Queries.ProductQueries.GetAllProducts
 {
-    public class GetAllProductsQueryRequest:IRequest<List<GetAllProductsQueryResponse>>
+    public class GetAllProductsQueryRequest:IRequest<GetAllProductsQueryResponse>
     {
+        public int Page { get; set; } = 0;
+        public int Size { get; set; } = 9;
     }
 }

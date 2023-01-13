@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECommerceAPI.Persistence.Migrations
 {
     [DbContext(typeof(ECommerceAPIDbContext))]
-    [Migration("20230105010406_mig1")]
+    [Migration("20230112133615_mig1")]
     partial class mig1
     {
         /// <inheritdoc />
@@ -37,7 +37,7 @@ namespace ECommerceAPI.Persistence.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("UpdatedDate")
+                    b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -66,7 +66,7 @@ namespace ECommerceAPI.Persistence.Migrations
                     b.Property<bool>("Sale")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("UpdatedDate")
+                    b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");

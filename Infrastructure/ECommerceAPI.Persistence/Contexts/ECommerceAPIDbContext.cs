@@ -12,23 +12,32 @@ namespace ECommerceAPI.Persistence.Contexts
         public DbSet<Category> Categories { get; set; }
 
 
-
+     
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var datas = ChangeTracker.Entries<BaseEntity>();
 
             foreach (var data in datas)
             {
-                if (data.Entity as BaseEntity !=null )
+                if (data.Entity as BaseEntity != null)
                 {
+                    //if (data.State == EntityState.Added)
+                    //{
+                    //    data.Entity.CreatedDate = DateTime.Now;
+                    //}
+                    //if (data.State == EntityState.Modified)
+                    //{
+                    //    data.Entity.UpdatedDate = DateTime.Now;
+
+                    //}
                     _ = data.State switch
                     {
-                    EntityState.Added => data.Entity.CreatedDate = DateTime.Now,
-                    EntityState.Modified => data.Entity.UpdatedDate = DateTime.Now,
-                    _ => DateTime.Now
-                                };
+                        EntityState.Added => data.Entity.CreatedDate = DateTime.UtcNow,
+                        EntityState.Modified => data.Entity.UpdatedDate = DateTime.UtcNow,
+                        _ => DateTime.UtcNow
+                    };
                 }
-               
+
             }
             return await base.SaveChangesAsync(cancellationToken);
         }
