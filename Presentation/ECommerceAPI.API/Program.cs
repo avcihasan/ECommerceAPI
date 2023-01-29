@@ -1,5 +1,6 @@
 using ECommerceAPI.Application;
 using ECommerceAPI.Application.Validatiors.ProductValidators;
+using ECommerceAPI.Infrastructure;
 using ECommerceAPI.Infrastructure.Filters;
 using ECommerceAPI.Persistence;
 using FluentValidation;
@@ -24,6 +25,7 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(
 
 builder.Services.AddPersistenceServices();
 builder.Services.AddApplicationServices();
+builder.Services.AddInfrastructureServices();
 
 var app = builder.Build();
 

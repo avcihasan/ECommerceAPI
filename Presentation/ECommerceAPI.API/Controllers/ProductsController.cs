@@ -4,7 +4,11 @@ using ECommerceAPI.Application.Features.Commands.ProductCommands.RemoveByIdProdu
 using ECommerceAPI.Application.Features.Commands.ProductCommands.UpdateProduct;
 using ECommerceAPI.Application.Features.Queries.ProductQueries.GetAllProducts;
 using ECommerceAPI.Application.Features.Queries.ProductQueries.GetByIdProduct;
+using ECommerceAPI.Application.Repositories.FileRepositories;
+using ECommerceAPI.Application.Repositories.InvoiceFileRepositories;
+using ECommerceAPI.Application.Repositories.ProductImageFileRepositories;
 using ECommerceAPI.Application.Repositories.ProductRepositories;
+using ECommerceAPI.Application.Services;
 using ECommerceAPI.Application.UnitOfWorks;
 using ECommerceAPI.Domain.Entities;
 using MediatR;
@@ -17,12 +21,22 @@ namespace ECommerceAPI.API.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly IWebHostEnvironment _webHostEnviroment;
+        private readonly IFileService _fileSerivce;
 
-        public ProductsController(IMediator mediator, IWebHostEnvironment webHostEnviroment)
+
+        private readonly IProductImageFileWriteRepository _productImageFileWriteRepository;
+        private readonly IFileWriteRepository _fileWriteRepository;
+        private readonly IInvoiceFileWriteRepository _ınvoiceFileWriteRepository;
+        private readonly IUnitOfWork _unitOfWork;
+
+        public ProductsController(IMediator mediator, IFileService fileSerivce, IProductImageFileWriteRepository productImageFileWriteRepository, IUnitOfWork unitOfWork, IFileWriteRepository fileWriteRepository, IInvoiceFileWriteRepository ınvoiceFileWriteRepository)
         {
             _mediator = mediator;
-            _webHostEnviroment = webHostEnviroment;
+            _fileSerivce = fileSerivce;
+            _productImageFileWriteRepository = productImageFileWriteRepository;
+            _unitOfWork = unitOfWork;
+            _fileWriteRepository = fileWriteRepository;
+            _ınvoiceFileWriteRepository = ınvoiceFileWriteRepository;
         }
 
         [HttpGet]
@@ -67,26 +81,21 @@ namespace ECommerceAPI.API.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Upload ()
         {
-            string uploadPath = Path.Combine(_webHostEnviroment.WebRootPath, "resource/product-images");
-            if (!Directory.Exists(uploadPath))
+           var datas= await _fileSerivce.UploadAsync("resource/invoices",Request.Form.Files);
+
+            await _ınvoiceFileWriteRepository.AddRangeAsync(datas.Select(d => new InvoiceFile()
             {
-                Directory.CreateDirectory(uploadPath);
-            }
-
-            Random r = new();
-            foreach (IFormFile file in Request.Form.Files)
-            {
-                string fullPath = Path.Combine(uploadPath, $"{r.Next()}{Path.GetExtension(file.FileName)}");
-
-                using FileStream fileStream=new(fullPath,FileMode.Create,FileAccess.Write,FileShare.None,1024 * 1024, useAsync:false);
-
-                await file.CopyToAsync(fileStream);
-                await fileStream.FlushAsync();
-            }
+                FileName = d.fileName,
+                Path = d.path,
+                Price=new Random().Next()
+               
+            }).ToList()) ;
+            await _unitOfWork.SaveAsync();
+            
 
             return Ok();
         }
-
+        
 
     }
 }
