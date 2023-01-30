@@ -10,8 +10,7 @@ namespace ECommerceAPI.Infrastructure.Services.Storage
     public class Storage
     {
         protected delegate bool HasFile(string pathOrContainerName, string fileName);
-
-        protected async Task<string> FileRenameAsync(string pathOrContainerName, string fileName,HasFile hasFileMethod ,bool first = true)
+        protected async Task<string> FileRenameAsync(string pathOrContainerName, string fileName, HasFile hasFileMethod, bool first = true)
         {
             string newFileName = await Task.Run<string>(async () =>
             {
@@ -57,6 +56,7 @@ namespace ECommerceAPI.Infrastructure.Services.Storage
                     }
                 }
 
+      
                 if (hasFileMethod(pathOrContainerName, newFileName))
                     return await FileRenameAsync(pathOrContainerName, newFileName, hasFileMethod, false);
                 else
@@ -65,6 +65,5 @@ namespace ECommerceAPI.Infrastructure.Services.Storage
 
             return newFileName;
         }
-
     }
 }

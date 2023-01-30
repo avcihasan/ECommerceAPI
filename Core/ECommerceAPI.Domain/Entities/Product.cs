@@ -15,5 +15,7 @@
 
         public ProductDetail ProductDetails { get; set; }
 
+        public ICollection<ProductImageFile> ProductImageFiles { get; set; }
+
     }
 }

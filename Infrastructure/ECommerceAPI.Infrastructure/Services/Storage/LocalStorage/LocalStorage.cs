@@ -36,25 +36,29 @@ namespace ECommerceAPI.Infrastructure.Services.Storage.LocalStorage
         public async Task<List<(string fileName, string pathOrContainerName)>> UploadAsync(string path, IFormFileCollection files)
         {
             string uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, path);
+            string clientPath = Path.Combine("C:\\Users\\avcih\\OneDrive\\Masaüstü\\ECommerce\\ECommerceClient\\src\\assets", path);
 
             if (!Directory.Exists(uploadPath))
             {
                 Directory.CreateDirectory(uploadPath);
             }
+            if (!Directory.Exists(clientPath))
+            {
+                Directory.CreateDirectory(clientPath);
+            }
 
             List<(string fileName, string path)> datas = new();
-            List<bool> results = new();
+       
             foreach (IFormFile file in files)
             {
+                string fileNewName = await FileRenameAsync(path, file.Name, HasFile);
 
-                string newFileName = await FileRenameAsync(path, file.Name, HasFile);
+                await CopyFileAsync($"{uploadPath}\\{fileNewName}", file);
 
+                await CopyFileAsync($"{clientPath}\\{fileNewName}", file);
 
-
-                await CopyFileAsync(Path.Combine(uploadPath, newFileName), file);
-                datas.Add((newFileName, Path.Combine(path, newFileName)));
-       
-
+                datas.Add((fileNewName, $"{path}\\{fileNewName}"));
+            
             }
 
             return datas;
