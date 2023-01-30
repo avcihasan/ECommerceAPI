@@ -1,4 +1,5 @@
-﻿using ECommerceAPI.Application.Features.Commands.ProductCommands.CreateProduct;
+﻿using ECommerceAPI.Application.Abstractions.Storage;
+using ECommerceAPI.Application.Features.Commands.ProductCommands.CreateProduct;
 using ECommerceAPI.Application.Features.Commands.ProductCommands.ProductAddToCategory;
 using ECommerceAPI.Application.Features.Commands.ProductCommands.RemoveByIdProduct;
 using ECommerceAPI.Application.Features.Commands.ProductCommands.UpdateProduct;
@@ -7,8 +8,6 @@ using ECommerceAPI.Application.Features.Queries.ProductQueries.GetByIdProduct;
 using ECommerceAPI.Application.Repositories.FileRepositories;
 using ECommerceAPI.Application.Repositories.InvoiceFileRepositories;
 using ECommerceAPI.Application.Repositories.ProductImageFileRepositories;
-using ECommerceAPI.Application.Repositories.ProductRepositories;
-using ECommerceAPI.Application.Services;
 using ECommerceAPI.Application.UnitOfWorks;
 using ECommerceAPI.Domain.Entities;
 using MediatR;
@@ -21,7 +20,7 @@ namespace ECommerceAPI.API.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly IFileService _fileSerivce;
+
 
 
         private readonly IProductImageFileWriteRepository _productImageFileWriteRepository;
@@ -29,14 +28,16 @@ namespace ECommerceAPI.API.Controllers
         private readonly IInvoiceFileWriteRepository _ınvoiceFileWriteRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public ProductsController(IMediator mediator, IFileService fileSerivce, IProductImageFileWriteRepository productImageFileWriteRepository, IUnitOfWork unitOfWork, IFileWriteRepository fileWriteRepository, IInvoiceFileWriteRepository ınvoiceFileWriteRepository)
+        private readonly IStorageService _storageService;
+
+        public ProductsController(IMediator mediator, IProductImageFileWriteRepository productImageFileWriteRepository, IUnitOfWork unitOfWork, IFileWriteRepository fileWriteRepository, IInvoiceFileWriteRepository ınvoiceFileWriteRepository, IStorageService storageService)
         {
             _mediator = mediator;
-            _fileSerivce = fileSerivce;
             _productImageFileWriteRepository = productImageFileWriteRepository;
             _unitOfWork = unitOfWork;
             _fileWriteRepository = fileWriteRepository;
             _ınvoiceFileWriteRepository = ınvoiceFileWriteRepository;
+            _storageService = storageService;
         }
 
         [HttpGet]
@@ -81,13 +82,14 @@ namespace ECommerceAPI.API.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Upload ()
         {
-           var datas= await _fileSerivce.UploadAsync("resource/invoices",Request.Form.Files);
+           var datas= await _storageService.UploadAsync("resource/invoices",Request.Form.Files);
 
             await _ınvoiceFileWriteRepository.AddRangeAsync(datas.Select(d => new InvoiceFile()
             {
                 FileName = d.fileName,
-                Path = d.path,
-                Price=new Random().Next()
+                Path = d.pathOrContainerName,
+                Price=new Random().Next(),
+                Storage=_storageService.StorageName
                
             }).ToList()) ;
             await _unitOfWork.SaveAsync();
