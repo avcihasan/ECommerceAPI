@@ -12,7 +12,7 @@ namespace ECommerceAPI.Persistence.Contexts
         { }
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<ECommerceAPI.Domain.Entities.File> Files { get; set; }
+        public DbSet<ECommerceAPI.Domain.Entities.File> Files { get; set; } 
         public DbSet<ProductImageFile> ProductImageFiles { get; set; }
         public DbSet<InvoiceFile> InvoiceFiles { get; set; }
 
@@ -46,7 +46,7 @@ namespace ECommerceAPI.Persistence.Contexts
             }
             return await base.SaveChangesAsync(cancellationToken);
         }
-
+       
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ProductCategory>()
@@ -69,7 +69,9 @@ namespace ECommerceAPI.Persistence.Contexts
                 .HasOne(x => x.ProductDetails)
                 .WithOne(x => x.Product)
                 .HasForeignKey<ProductDetail>(x => x.Id);
-                
+
+            base.OnModelCreating(modelBuilder);
+
         }
 
     }

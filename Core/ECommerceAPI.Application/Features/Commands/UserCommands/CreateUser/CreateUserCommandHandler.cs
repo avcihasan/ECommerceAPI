@@ -23,16 +23,19 @@ namespace ECommerceAPI.Application.Features.Commands.UserCommands.CreateUser
 
         public async Task<CreateUserCommandResponse> Handle(CreateUserCommandRequest request, CancellationToken cancellationToken)
         {
+            
             AppUser addUser = _mapper.Map<AppUser>(request);
-            IdentityResult result=await _userManager.CreateAsync(addUser, request.Password);
+           
+            addUser.Id = Guid.NewGuid().ToString();
+            IdentityResult result = await _userManager.CreateAsync(addUser, request.Password);
+
             CreateUserCommandResponse createUserCommandResponse = new() { Succeeded = result.Succeeded };
 
             if (result.Succeeded)
-                createUserCommandResponse.Message=("Kayıt Başarılı");
+                createUserCommandResponse.Message = ("Kayıt Başarılı");
             foreach (IdentityError error in result.Errors)
                 createUserCommandResponse.Message = (error.Description);
             return createUserCommandResponse;
-     
         }
     }
 }

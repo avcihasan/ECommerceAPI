@@ -12,6 +12,7 @@ using ECommerceAPI.Persistence.Repositories.InvoiceFileRepositories;
 using ECommerceAPI.Persistence.Repositories.ProductImageFileRepositories;
 using ECommerceAPI.Persistence.Repositories.ProductRepositories;
 using ECommerceAPI.Persistence.UnitOfWorks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -24,12 +25,13 @@ namespace ECommerceAPI.Persistence
             service.AddDbContext<ECommerceAPIDbContext>(options=>options.UseSqlServer(Configuration.ConnectionString));
             service.AddIdentity<AppUser, AppRole>(options =>
             {
-                options.Password.RequireDigit = false;
                 options.Password.RequiredLength = 3;
-                options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
                 options.Password.RequireUppercase = false;
-            }).AddEntityFrameworkStores<ECommerceAPIDbContext>();
+            }).AddEntityFrameworkStores<ECommerceAPIDbContext>()
+            .AddDefaultTokenProviders();
             service.AddScoped<IProductReadRepository, ProductReadRepository>();
             service.AddScoped<IProductWriteRepository, ProductWriteRepository>();
 
