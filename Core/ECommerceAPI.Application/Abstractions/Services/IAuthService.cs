@@ -11,5 +11,6 @@ namespace ECommerceAPI.Application.Abstractions.Services
     public interface IAuthService
     {
         Task<TokenDto> LoginAsync(LoginUserDto loginUser, int tokenLife);
+        Task<TokenDto> RefreshTokenLoginAsync(string refreshToken);
     }
 }
