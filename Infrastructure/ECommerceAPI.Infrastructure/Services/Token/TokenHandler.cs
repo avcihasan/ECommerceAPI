@@ -32,7 +32,7 @@ namespace ECommerceAPI.Infrastructure.Services.Token
             token.Expiration = DateTime.Now.AddMinutes(minute);
 
             JwtSecurityToken jwtSecurityToken = new(
-                audience:_configuration["Token:SigninKey"],
+                audience:_configuration["Token:Audience"],
                 issuer: _configuration["Token:Issuer"],
                 expires:token.Expiration,
                 notBefore:DateTime.Now,

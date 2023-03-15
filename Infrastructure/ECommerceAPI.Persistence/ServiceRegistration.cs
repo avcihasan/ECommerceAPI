@@ -1,4 +1,6 @@
-﻿using ECommerceAPI.Application.Repositories.CategoryRepositories;
+﻿using ECommerceAPI.Application.Abstractions.Services;
+using ECommerceAPI.Application.Abstractions.Token;
+using ECommerceAPI.Application.Repositories.CategoryRepositories;
 using ECommerceAPI.Application.Repositories.FileRepositories;
 using ECommerceAPI.Application.Repositories.InvoiceFileRepositories;
 using ECommerceAPI.Application.Repositories.ProductImageFileRepositories;
@@ -11,10 +13,12 @@ using ECommerceAPI.Persistence.Repositories.FileRepositories;
 using ECommerceAPI.Persistence.Repositories.InvoiceFileRepositories;
 using ECommerceAPI.Persistence.Repositories.ProductImageFileRepositories;
 using ECommerceAPI.Persistence.Repositories.ProductRepositories;
+using ECommerceAPI.Persistence.Services;
 using ECommerceAPI.Persistence.UnitOfWorks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ECommerceAPI.Persistence
 {
@@ -46,6 +50,12 @@ namespace ECommerceAPI.Persistence
 
             service.AddScoped<IInvoiceFileReadRepository,InvoiceFileReadRepository>();
             service.AddScoped<IInvoiceFileWriteRepository,InvoiceFileWriteRepository>();
+
+
+            service.AddScoped<IAuthService,AuthService>();
+            service.AddScoped<IUserService,UserService>();
+
+
 
             service.AddScoped<IUnitOfWork, UnitOfWork>();
 

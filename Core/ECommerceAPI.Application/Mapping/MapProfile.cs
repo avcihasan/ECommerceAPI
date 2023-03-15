@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ECommerceAPI.Application.DTOs.ProductDTOs;
+using ECommerceAPI.Application.DTOs.UserDTOs;
 using ECommerceAPI.Application.Features.Commands.CategoryCommands.CreateCategory;
 using ECommerceAPI.Application.Features.Commands.CategoryCommands.UpdateCategory;
 using ECommerceAPI.Application.Features.Commands.ProductCommands.CreateProduct;
@@ -27,13 +28,11 @@ namespace ECommerceAPI.Application.Mapping
             CreateMap<Category, GetAllCategoriesQueryResponse>();
             CreateMap<UpdateCategoryCommandRequest, Category>();
 
-            CreateMap<CreateUserCommandRequest, AppUser>();
-
-
-            CreateMap<Product, GetProductDto>();
+            CreateMap<CreateUserCommandRequest, CreateUserDto>();
+            CreateMap<CreateUserDto, AppUser>();
 
             
-            
+            CreateMap<Product, GetProductDto>();  
 
         }
     }

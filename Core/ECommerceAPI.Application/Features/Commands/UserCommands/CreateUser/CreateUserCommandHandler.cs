@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using ECommerceAPI.Application.Abstractions.Services;
+using ECommerceAPI.Application.DTOs.UserDTOs;
 using ECommerceAPI.Domain.Entities.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -12,30 +14,20 @@ namespace ECommerceAPI.Application.Features.Commands.UserCommands.CreateUser
 {
     public class CreateUserCommandHandler : IRequestHandler<CreateUserCommandRequest, CreateUserCommandResponse>
     {
-        private readonly UserManager<AppUser> _userManager;
+        private readonly IUserService _userService;
         private readonly IMapper _mapper;
 
-        public CreateUserCommandHandler(UserManager<AppUser> userManager, IMapper mapper)
+        public CreateUserCommandHandler(IUserService userService, IMapper mapper)
         {
-            _userManager = userManager;
+            _userService = userService;
             _mapper = mapper;
         }
 
         public async Task<CreateUserCommandResponse> Handle(CreateUserCommandRequest request, CancellationToken cancellationToken)
         {
-            
-            AppUser addUser = _mapper.Map<AppUser>(request);
-           
-            addUser.Id = Guid.NewGuid().ToString();
-            IdentityResult result = await _userManager.CreateAsync(addUser, request.Password);
+          CreateUserResponseDto response= await _userService.CreateUserAsync(_mapper.Map<CreateUserDto>(request)) ;
 
-            CreateUserCommandResponse createUserCommandResponse = new() { Succeeded = result.Succeeded };
-
-            if (result.Succeeded)
-                createUserCommandResponse.Message = ("Kayıt Başarılı");
-            foreach (IdentityError error in result.Errors)
-                createUserCommandResponse.Message = (error.Description);
-            return createUserCommandResponse;
+            return new() { Message = response.Message, Succeeded = response.Succeeded };
         }
     }
 }
