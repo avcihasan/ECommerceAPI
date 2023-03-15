@@ -1,3 +1,4 @@
+using ECommerceAPI.API.Extensions;
 using ECommerceAPI.Application;
 using ECommerceAPI.Application.Validatiors.ProductValidators;
 using ECommerceAPI.Infrastructure;
@@ -62,6 +63,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.ConfigureExceptionHandler();
+
 app.UseCors();
 app.UseStaticFiles();
 
