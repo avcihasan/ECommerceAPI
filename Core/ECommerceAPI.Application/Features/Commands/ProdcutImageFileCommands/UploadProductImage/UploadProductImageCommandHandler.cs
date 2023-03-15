@@ -15,15 +15,11 @@ namespace ECommerceAPI.Application.Features.Commands.ProdcutImageFileCommands.Up
 {
     public class UploadProductImageCommandHandler : IRequestHandler<UploadProductImageCommandRequest, UploadProductImageCommandResponse>
     {
-        private readonly IProductReadRepository _productReadRepository;
-        private readonly IProductImageFileWriteRepository _productImageFileWriteRepository;
         private readonly IStorageService _storageService;
         private readonly IUnitOfWork _unitOfWork;
 
-        public UploadProductImageCommandHandler(IProductReadRepository productReadRepository, IProductImageFileWriteRepository productImageFileWriteRepository, IStorageService storageService, IUnitOfWork unitOfWork)
+        public UploadProductImageCommandHandler(IStorageService storageService, IUnitOfWork unitOfWork)
         {
-            _productReadRepository = productReadRepository;
-            _productImageFileWriteRepository = productImageFileWriteRepository;
             _storageService = storageService;
             _unitOfWork = unitOfWork;
         }
@@ -32,9 +28,9 @@ namespace ECommerceAPI.Application.Features.Commands.ProdcutImageFileCommands.Up
         {
             var datas = await _storageService.UploadAsync("resource/ProductImages", request.Files);
 
-            Product product = await _productReadRepository.GetByIdAsync(request.Id);
+            Product product = await _unitOfWork.ProductReadRepository.GetByIdAsync(request.Id);
 
-            await _productImageFileWriteRepository.AddRangeAsync(datas.Select(d => new ProductImageFile()
+            await _unitOfWork.ProductImageFileWriteRepository.AddRangeAsync(datas.Select(d => new ProductImageFile()
             {
                 FileName = d.fileName,
                 Path = d.pathOrContainerName,

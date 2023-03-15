@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ECommerceAPI.Application.DTOs.ProductDTOs;
 using ECommerceAPI.Application.Repositories.ProductRepositories;
+using ECommerceAPI.Application.UnitOfWorks;
 using ECommerceAPI.Domain.Entities;
 using MediatR;
 using System;
@@ -14,17 +15,17 @@ namespace ECommerceAPI.Application.Features.Queries.ProductQueries.GetAllProduct
 {
     public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQueryRequest,GetAllProductsQueryResponse>
     {
-        private readonly IProductReadRepository _readRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public GetAllProductsQueryHandler(IProductReadRepository readRepository, IMapper mapper)
+        public GetAllProductsQueryHandler(IMapper mapper, IUnitOfWork unitOfWork)
         {
-            _readRepository = readRepository;
             _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
 
         public  async Task<GetAllProductsQueryResponse> Handle(GetAllProductsQueryRequest request, CancellationToken cancellationToken)
         {
-            IQueryable<Product> productList = _readRepository.GetAllProductsAllProperties(false);
+            IQueryable<Product> productList = _unitOfWork.ProductReadRepository.GetAllProductsAllProperties(false);
             int count = productList.Count();
             ;
             List<GetProductDto> products = _mapper.Map<List<GetProductDto>>(productList.Skip(request.Page * request.Size).Take(request.Size).ToList());

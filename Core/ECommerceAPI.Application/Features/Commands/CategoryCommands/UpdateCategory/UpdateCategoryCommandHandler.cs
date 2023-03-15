@@ -13,13 +13,11 @@ namespace ECommerceAPI.Application.Features.Commands.CategoryCommands.UpdateCate
 {
     public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryCommandRequest, UpdateCategoryCommandResponse>
     {
-        private readonly ICategoryWriteRepository _repo;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public UpdateCategoryCommandHandler(ICategoryWriteRepository repo, IUnitOfWork unitOfWork, IMapper mapper)
+        public UpdateCategoryCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _repo = repo;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
@@ -27,7 +25,7 @@ namespace ECommerceAPI.Application.Features.Commands.CategoryCommands.UpdateCate
         public async Task<UpdateCategoryCommandResponse> Handle(UpdateCategoryCommandRequest request, CancellationToken cancellationToken)
         {
             Category category = _mapper.Map<Category>(request);
-            _repo.Update(category);
+            _unitOfWork.CategoryWriteRepository.Update(category);
             await _unitOfWork.SaveAsync();
             return new();
         }

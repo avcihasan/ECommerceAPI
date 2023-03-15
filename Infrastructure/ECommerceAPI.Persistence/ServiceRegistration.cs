@@ -36,20 +36,7 @@ namespace ECommerceAPI.Persistence
                 options.Password.RequireUppercase = false;
             }).AddEntityFrameworkStores<ECommerceAPIDbContext>()
             .AddDefaultTokenProviders();
-            service.AddScoped<IProductReadRepository, ProductReadRepository>();
-            service.AddScoped<IProductWriteRepository, ProductWriteRepository>();
-
-            service.AddScoped<ICategoryReadRepository, CategoryReadRepository>();
-            service.AddScoped<ICategoryWriteRepository, CategoryWriteRepository>();
-
-            service.AddScoped<IFileReadRepository, FileReadRepository>();
-            service.AddScoped<IFileWriteRepository, FileWriteRepository>();
-
-            service.AddScoped<IProductImageFileReadRepository, ProductImageFileReadRepository>();
-            service.AddScoped<IProductImageFileWriteRepository, ProductImageFileWriteRepository>();
-
-            service.AddScoped<IInvoiceFileReadRepository,InvoiceFileReadRepository>();
-            service.AddScoped<IInvoiceFileWriteRepository,InvoiceFileWriteRepository>();
+           
 
 
             service.AddScoped<IAuthService,AuthService>();

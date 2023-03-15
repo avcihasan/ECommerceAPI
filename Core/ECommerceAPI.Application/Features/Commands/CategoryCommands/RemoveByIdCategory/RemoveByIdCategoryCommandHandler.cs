@@ -12,21 +12,17 @@ namespace ECommerceAPI.Application.Features.Commands.CategoryCommands.RemoveById
 {
     public class RemoveByIdCategoryCommandHandler : IRequestHandler<RemoveByIdCategoryCommandRequest, RemoveByIdCategoryCommandResponse>
     {
-        private readonly ICategoryWriteRepository _writeRepo;
-        private readonly ICategoryReadRepository _readRepo;
         private readonly IUnitOfWork _unitOfWork;
 
-        public RemoveByIdCategoryCommandHandler(ICategoryWriteRepository writeRepo, IUnitOfWork unitOfWork, ICategoryReadRepository readRepo)
+        public RemoveByIdCategoryCommandHandler(IUnitOfWork unitOfWork)
         {
-            _writeRepo = writeRepo;
             _unitOfWork = unitOfWork;
-            _readRepo = readRepo;
         }
 
         public async Task<RemoveByIdCategoryCommandResponse> Handle(RemoveByIdCategoryCommandRequest request, CancellationToken cancellationToken)
         {
-            Category category = await _readRepo.GetByIdAsync(request.Id.ToString());
-            _writeRepo.Remove(category);
+            Category category = await _unitOfWork.CategoryReadRepository.GetByIdAsync(request.Id.ToString());
+            _unitOfWork.CategoryWriteRepository.Remove(category);
             await _unitOfWork.SaveAsync();
             return new();
         }

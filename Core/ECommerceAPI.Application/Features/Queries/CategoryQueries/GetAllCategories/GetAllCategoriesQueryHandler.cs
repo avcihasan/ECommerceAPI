@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ECommerceAPI.Application.Repositories.CategoryRepositories;
+using ECommerceAPI.Application.UnitOfWorks;
 using ECommerceAPI.Domain.Entities;
 using MediatR;
 using System;
@@ -12,18 +13,18 @@ namespace ECommerceAPI.Application.Features.Queries.CategoryQueries.GetAllCatego
 {
     public class GetAllCategoriesQueryHandler : IRequestHandler<GetAllCategoriesQueryRequest, List<GetAllCategoriesQueryResponse>>
     {
-        private readonly ICategoryReadRepository _categoryReadRepository;
         private readonly IMapper _mapper;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public GetAllCategoriesQueryHandler(ICategoryReadRepository categoryReadRepository, IMapper mapper)
+        public GetAllCategoriesQueryHandler(IMapper mapper, IUnitOfWork unitOfWork)
         {
-            _categoryReadRepository = categoryReadRepository;
             _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
 
         public Task<List<GetAllCategoriesQueryResponse>> Handle(GetAllCategoriesQueryRequest request, CancellationToken cancellationToken)
         {
-            List<Category> categories = _categoryReadRepository.GetAll(false).ToList();
+            List<Category> categories = _unitOfWork.CategoryReadRepository.GetAll(false).ToList();
 
             return Task.Run(() => _mapper.Map<List<GetAllCategoriesQueryResponse>>(categories));
         }

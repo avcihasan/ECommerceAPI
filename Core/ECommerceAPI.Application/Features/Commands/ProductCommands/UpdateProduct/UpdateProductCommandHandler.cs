@@ -13,13 +13,11 @@ namespace ECommerceAPI.Application.Features.Commands.ProductCommands.UpdateProdu
 {
     internal class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommandRequest, UpdateProductCommandResponse>
     {
-        private readonly IProductWriteRepository _productWriteRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public UpdateProductCommandHandler(IProductWriteRepository productWriteRepository, IUnitOfWork unitOfWork, IMapper mapper)
+        public UpdateProductCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _productWriteRepository = productWriteRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
@@ -27,7 +25,7 @@ namespace ECommerceAPI.Application.Features.Commands.ProductCommands.UpdateProdu
         public async Task<UpdateProductCommandResponse> Handle(UpdateProductCommandRequest request, CancellationToken cancellationToken)
         {
             Product product = _mapper.Map<Product>(request);
-            _productWriteRepository.Update(product);
+            _unitOfWork.ProductWriteRepository.Update(product);
             await _unitOfWork.SaveAsync();
             return new();
         }

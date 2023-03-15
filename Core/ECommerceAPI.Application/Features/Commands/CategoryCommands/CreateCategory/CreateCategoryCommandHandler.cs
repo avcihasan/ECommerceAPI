@@ -13,13 +13,11 @@ namespace ECommerceAPI.Application.Features.Commands.CategoryCommands.CreateCate
 {
     public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommandRequest, CreateCategoryCommandResponse>
     {
-        private readonly ICategoryWriteRepository _categoryWriteRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public CreateCategoryCommandHandler(ICategoryWriteRepository categoryWriteRepository, IUnitOfWork unitOfWork, IMapper mapper)
+        public CreateCategoryCommandHandler( IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _categoryWriteRepository = categoryWriteRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
@@ -27,7 +25,7 @@ namespace ECommerceAPI.Application.Features.Commands.CategoryCommands.CreateCate
         public async Task<CreateCategoryCommandResponse> Handle(CreateCategoryCommandRequest request, CancellationToken cancellationToken)
         {
             Category category = _mapper.Map<Category>(request);
-            await _categoryWriteRepository.AddAsync(category);
+            await _unitOfWork.CategoryWriteRepository.AddAsync(category);
             await _unitOfWork.SaveAsync();
             return new();
         }
