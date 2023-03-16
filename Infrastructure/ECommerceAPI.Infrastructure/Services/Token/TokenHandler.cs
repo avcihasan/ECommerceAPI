@@ -1,11 +1,13 @@
 ﻿using ECommerceAPI.Application.Abstractions.Token;
 using ECommerceAPI.Application.DTOs.TokenDTOs;
+using ECommerceAPI.Domain.Entities.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,7 +23,7 @@ namespace ECommerceAPI.Infrastructure.Services.Token
             _configuration = configuration;
         }
 
-        public TokenDto CreateAccessToken(int minute)
+        public TokenDto CreateAccessToken(int minute, AppUser user)
         {
             TokenDto token = new();
             //securitykey in simetriğini alıyoruz 
@@ -37,7 +39,8 @@ namespace ECommerceAPI.Infrastructure.Services.Token
                 issuer: _configuration["Token:Issuer"],
                 expires:token.Expiration,
                 notBefore:DateTime.Now,
-                signingCredentials:signingCredentials
+                signingCredentials:signingCredentials,
+                claims:new List<Claim> { new(ClaimTypes.Name,user.UserName)}
                 );
 
             //token oluşturucu sınıfından örnek alalım

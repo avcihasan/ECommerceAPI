@@ -1,3 +1,4 @@
+using ECommerceAPI.API.Configurations.ColumnWriters;
 using ECommerceAPI.API.Extensions;
 using ECommerceAPI.Application;
 using ECommerceAPI.Application.Validatiors.ProductValidators;
@@ -10,6 +11,12 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using NpgsqlTypes;
+using Serilog;
+using Serilog.Context;
+using Serilog.Core;
+using Serilog.Sinks.MSSqlServer;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Text;
@@ -53,7 +60,35 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             NameClaimType = ClaimTypes.Name
         };
     });
+SqlColumn sqlColumn = new SqlColumn();
+sqlColumn.ColumnName = "UserName";
+sqlColumn.DataType = System.Data.SqlDbType.NVarChar;
+sqlColumn.PropertyName = "UserName";
+sqlColumn.DataLength = 50;
+sqlColumn.AllowNull = true;
+ColumnOptions columnOpt = new ColumnOptions();
+columnOpt.Store.Remove(StandardColumn.Properties);
+columnOpt.Store.Add(StandardColumn.LogEvent);
+columnOpt.AdditionalColumns = new Collection<SqlColumn> { sqlColumn };
 
+Logger log = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("logs/log.txt")
+    .WriteTo.MSSqlServer(
+    connectionString: builder.Configuration.GetConnectionString("SqlServer"),
+     sinkOptions: new MSSqlServerSinkOptions
+     {
+         AutoCreateSqlTable = true,
+         TableName = "logs",
+     },
+     appConfiguration: null,
+     columnOptions: columnOpt
+    )
+    .Enrich.FromLogContext()
+    .Enrich.With<CustomUserNameColumn>()
+    .MinimumLevel.Information()
+    .CreateLogger();
+builder.Host.UseSerilog(log);
 
 var app = builder.Build();
 
@@ -74,6 +109,13 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.Use(async (context, next) =>
+{
+    var username = context.User?.Identity?.IsAuthenticated != null || true ? context.User.Identity.Name : null;
+    LogContext.PushProperty("user_name", username);
+    await next();
+});
 
 app.MapControllers();
 

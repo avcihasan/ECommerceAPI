@@ -43,7 +43,7 @@ namespace ECommerceAPI.Persistence.Services
 
             if (result.Succeeded)
             {
-                TokenDto token = _tokenHandler.CreateAccessToken(tokenLifeMinute);
+                TokenDto token = _tokenHandler.CreateAccessToken(tokenLifeMinute,user);
                 await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 15);
                 return token;
             }
@@ -58,7 +58,7 @@ namespace ECommerceAPI.Persistence.Services
             AppUser? user = await _userManager.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
             if (user != null && user?.RefreshTokenEndDate > DateTime.UtcNow)
             {
-                TokenDto token = _tokenHandler.CreateAccessToken(15);
+                TokenDto token = _tokenHandler.CreateAccessToken(15,user);
                 await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 15);
                 return token;
             }
