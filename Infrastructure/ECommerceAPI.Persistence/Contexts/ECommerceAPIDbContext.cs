@@ -17,6 +17,7 @@ namespace ECommerceAPI.Persistence.Contexts
         public DbSet<InvoiceFile> InvoiceFiles { get; set; }
 
 
+        
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
@@ -49,6 +50,15 @@ namespace ECommerceAPI.Persistence.Contexts
        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Order>()
+                .HasKey(x => x.Id);
+
+            modelBuilder.Entity<Order>()
+                .HasOne(x => x.Basket)
+                .WithOne(x => x.Order)
+                .HasForeignKey<Order>(x => x.Id);
+
+
             modelBuilder.Entity<ProductCategory>()
                 .HasKey(key => new{ key.ProductId, key.CategoryId });
 

@@ -1,4 +1,6 @@
 ﻿using ECommerceAPI.Application.Repositories;
+using ECommerceAPI.Application.Repositories.BasketItemRepositories;
+using ECommerceAPI.Application.Repositories.BasketRepositories;
 using ECommerceAPI.Application.Repositories.CategoryRepositories;
 using ECommerceAPI.Application.Repositories.FileRepositories;
 using ECommerceAPI.Application.Repositories.InvoiceFileRepositories;
@@ -12,14 +14,25 @@ namespace ECommerceAPI.Application.UnitOfWorks
     {
         ICategoryReadRepository CategoryReadRepository { get; }
         ICategoryWriteRepository CategoryWriteRepository { get; }
+
         IFileReadRepository FileReadRepository { get; }
         IFileWriteRepository FileWriteRepository { get; }
+
         IInvoiceFileReadRepository InvoiceFileReadRepository { get; }
         IInvoiceFileWriteRepository InvoiceFileWriteRepository { get; }
+
         IProductImageFileReadRepository ProductImageFileReadRepository { get; }
         IProductImageFileWriteRepository ProductImageFileWriteRepository { get; }
+
         IProductReadRepository ProductReadRepository { get; }
         IProductWriteRepository ProductWriteRepository { get; }
+
+        IBasketReadRepository BasketReadRepository { get; }
+        IBasketWriteRepository BasketWriteRepository { get; }
+
+        IBasketItemReadRepository BasketItemReadRepository { get; }
+        IBasketItemWriteRepository BasketItemWriteRepository { get; }
+
         Task SaveAsync();
     }
 }

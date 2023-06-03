@@ -1,10 +1,14 @@
-﻿using ECommerceAPI.Application.Repositories.CategoryRepositories;
+﻿using ECommerceAPI.Application.Repositories.BasketItemRepositories;
+using ECommerceAPI.Application.Repositories.BasketRepositories;
+using ECommerceAPI.Application.Repositories.CategoryRepositories;
 using ECommerceAPI.Application.Repositories.FileRepositories;
 using ECommerceAPI.Application.Repositories.InvoiceFileRepositories;
 using ECommerceAPI.Application.Repositories.ProductImageFileRepositories;
 using ECommerceAPI.Application.Repositories.ProductRepositories;
 using ECommerceAPI.Application.UnitOfWorks;
 using ECommerceAPI.Persistence.Contexts;
+using ECommerceAPI.Persistence.Repositories.BasketItemRepository;
+using ECommerceAPI.Persistence.Repositories.BasketRepository;
 using ECommerceAPI.Persistence.Repositories.CategoryRepositories;
 using ECommerceAPI.Persistence.Repositories.FileRepositories;
 using ECommerceAPI.Persistence.Repositories.InvoiceFileRepositories;
@@ -26,6 +30,11 @@ namespace ECommerceAPI.Persistence.UnitOfWorks
         public IProductImageFileWriteRepository ProductImageFileWriteRepository { get; private set; }
         public IProductReadRepository ProductReadRepository { get; private set; }
         public IProductWriteRepository ProductWriteRepository { get; private set; }
+        public IBasketReadRepository BasketReadRepository { get; private set; }
+        public IBasketWriteRepository BasketWriteRepository { get; private set; }
+        public IBasketItemReadRepository BasketItemReadRepository { get; private set; }
+        public IBasketItemWriteRepository BasketItemWriteRepository { get; private set; }
+
         public UnitOfWork(ECommerceAPIDbContext context)
         {
             _context = context;
@@ -39,12 +48,14 @@ namespace ECommerceAPI.Persistence.UnitOfWorks
             ProductImageFileWriteRepository = new ProductImageFileWriteRepository(_context);
             ProductReadRepository = new ProductReadRepository(_context);
             ProductWriteRepository = new ProductWriteRepository(_context);
+            BasketReadRepository = new BasketReadRepository(_context);
+            BasketWriteRepository = new BasketWriteRepository(_context);
+            BasketItemReadRepository = new BasketItemReadRepository(_context);
+            BasketItemWriteRepository = new BasketItemWriteRepository(_context);
         }
 
-       
+
         public async Task SaveAsync()
-        {
-            await _context.SaveChangesAsync();
-        }
+            => await _context.SaveChangesAsync();
     }
 }
