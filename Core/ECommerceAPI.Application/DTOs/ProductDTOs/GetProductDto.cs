@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ECommerceAPI.Application.Features.Queries.ProductImageFileQueries.GetProductImages;
+using ECommerceAPI.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,5 +17,6 @@ namespace ECommerceAPI.Application.DTOs.ProductDTOs
         public bool Sale { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
+        public List<GetProductImagesQueryResponse> ProductImageFiles { get; set; }
     }
 }

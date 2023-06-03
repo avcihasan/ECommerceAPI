@@ -17,7 +17,8 @@ namespace ECommerceAPI.Persistence.Repositories.ProductRepositories
         {
             IQueryable<Product> products = _dbSet
                 .Include(p => p.Categories).ThenInclude(p=>p.Category)
-                .Include(p=>p.ProductDetails); 
+                .Include(p=>p.ProductDetails)
+                .Include(p=>p.ProductImageFiles); 
             if (tracking==false)
             {
                 products.AsNoTracking();

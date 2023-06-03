@@ -1,4 +1,5 @@
-﻿using ECommerceAPI.Application.Features.Commands.ProdcutImageFileCommands.DeleteProductImage;
+﻿using ECommerceAPI.Application.Features.Commands.ProdcutImageFileCommands.ChangeShowcaseProductImage;
+using ECommerceAPI.Application.Features.Commands.ProdcutImageFileCommands.DeleteProductImage;
 using ECommerceAPI.Application.Features.Commands.ProdcutImageFileCommands.UploadProductImage;
 using ECommerceAPI.Application.Features.Commands.ProductCommands.CreateProduct;
 using ECommerceAPI.Application.Features.Commands.ProductCommands.ProductAddToCategory;
@@ -92,7 +93,14 @@ namespace ECommerceAPI.API.Controllers
             await _mediator.Send(deleteProductImageCommandRequest);
 
             return Ok();
+        }
+        [HttpGet("[action]")]
+        [Authorize(AuthenticationSchemes = "Admin")]
+        public async Task<IActionResult> ChangeShowcaseProductImage([FromQuery] ChangeShowcaseProductImageRequest changeShowcaseProductImageRequest)
+        {
+            await _mediator.Send(changeShowcaseProductImageRequest);
 
+            return Ok();
         }
     }
 }

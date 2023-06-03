@@ -25,5 +25,5 @@ namespace ECommerceAPI.Application.Features.Queries.ProductImageFileQueries.GetP
                 Id = x.Id
             }).ToList() ;
         }
-    }
+    } 
 }

@@ -57,7 +57,7 @@ namespace ECommerceAPI.Infrastructure.Services.Storage.LocalStorage
 
                 await CopyFileAsync($"{clientPath}\\{fileNewName}", file);
 
-                datas.Add((fileNewName, $"{path}\\{fileNewName}"));
+                datas.Add((fileNewName, $"{path}/{fileNewName}"));
             
             }
 
