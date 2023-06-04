@@ -3,6 +3,7 @@ using ECommerceAPI.Application.Repositories.BasketRepositories;
 using ECommerceAPI.Application.Repositories.CategoryRepositories;
 using ECommerceAPI.Application.Repositories.FileRepositories;
 using ECommerceAPI.Application.Repositories.InvoiceFileRepositories;
+using ECommerceAPI.Application.Repositories.OrderRepositories;
 using ECommerceAPI.Application.Repositories.ProductImageFileRepositories;
 using ECommerceAPI.Application.Repositories.ProductRepositories;
 using ECommerceAPI.Application.UnitOfWorks;
@@ -12,6 +13,7 @@ using ECommerceAPI.Persistence.Repositories.BasketRepository;
 using ECommerceAPI.Persistence.Repositories.CategoryRepositories;
 using ECommerceAPI.Persistence.Repositories.FileRepositories;
 using ECommerceAPI.Persistence.Repositories.InvoiceFileRepositories;
+using ECommerceAPI.Persistence.Repositories.OrderRepositories;
 using ECommerceAPI.Persistence.Repositories.ProductImageFileRepositories;
 using ECommerceAPI.Persistence.Repositories.ProductRepositories;
 
@@ -34,6 +36,8 @@ namespace ECommerceAPI.Persistence.UnitOfWorks
         public IBasketWriteRepository BasketWriteRepository { get; private set; }
         public IBasketItemReadRepository BasketItemReadRepository { get; private set; }
         public IBasketItemWriteRepository BasketItemWriteRepository { get; private set; }
+        public IOrderWriteRepository OrderWriteRepository { get; private set; }
+        public IOrderReadRepository OrderReadRepository { get; private set; }
 
         public UnitOfWork(ECommerceAPIDbContext context)
         {
@@ -52,6 +56,8 @@ namespace ECommerceAPI.Persistence.UnitOfWorks
             BasketWriteRepository = new BasketWriteRepository(_context);
             BasketItemReadRepository = new BasketItemReadRepository(_context);
             BasketItemWriteRepository = new BasketItemWriteRepository(_context);
+            OrderWriteRepository = new OrderWriteRepository(_context);
+            OrderReadRepository = new OrderReadRepository(_context);
         }
 
 

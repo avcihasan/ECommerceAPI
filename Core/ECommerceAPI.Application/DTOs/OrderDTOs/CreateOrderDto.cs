@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ECommerceAPI.Domain.Entities
+namespace ECommerceAPI.Application.DTOs.OrderDTOs
 {
-    public class Order:BaseEntity
+    public class CreateOrderDto
     {
+        public string BasketId { get; set; }
         public string Description { get; set; }
         public string Address { get; set; }
-        public Basket Basket { get; set; }
     }
 }

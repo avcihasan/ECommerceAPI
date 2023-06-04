@@ -9,16 +9,16 @@ using System.Threading.Tasks;
 
 namespace ECommerceAPI.SignalR.HubServices
 {
-    public class ProductHubService : IProductHubServcie
+    public class OrderHubService : IOrderHubService
     {
         readonly IHubContext<ProductHub> _hubContext;
 
-        public ProductHubService(IHubContext<ProductHub> hubContext)
+        public OrderHubService(IHubContext<ProductHub> hubContext)
         {
             _hubContext = hubContext;
         }
 
-        public async Task ProductAddedMessageAsync(string message)
-            => await _hubContext.Clients.All.SendAsync(ReceiveFunctionNames.ProductAddedMessage,message);
+        public async Task OrderAddedMessageAsync(string message)
+            => await _hubContext.Clients.All.SendAsync(ReceiveFunctionNames.OrderAddedMessage, message);
     }
 }

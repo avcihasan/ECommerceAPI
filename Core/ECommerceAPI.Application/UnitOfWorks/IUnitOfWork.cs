@@ -4,6 +4,7 @@ using ECommerceAPI.Application.Repositories.BasketRepositories;
 using ECommerceAPI.Application.Repositories.CategoryRepositories;
 using ECommerceAPI.Application.Repositories.FileRepositories;
 using ECommerceAPI.Application.Repositories.InvoiceFileRepositories;
+using ECommerceAPI.Application.Repositories.OrderRepositories;
 using ECommerceAPI.Application.Repositories.ProductImageFileRepositories;
 using ECommerceAPI.Application.Repositories.ProductRepositories;
 using ECommerceAPI.Domain.Entities;
@@ -32,6 +33,10 @@ namespace ECommerceAPI.Application.UnitOfWorks
 
         IBasketItemReadRepository BasketItemReadRepository { get; }
         IBasketItemWriteRepository BasketItemWriteRepository { get; }
+
+        IOrderWriteRepository OrderWriteRepository { get; }
+        IOrderReadRepository OrderReadRepository { get; }
+
 
         Task SaveAsync();
     }

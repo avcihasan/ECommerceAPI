@@ -15,6 +15,9 @@ namespace ECommerceAPI.Persistence.Services
         readonly IHttpContextAccessor _httpContextAccessor;
         readonly IUnitOfWork _unitOfWork;
         readonly UserManager<AppUser> _userManager;
+       
+        public Basket GetUserActiveBasket => GetBasketAsync().Result;
+
         public BasketService(IHttpContextAccessor httpContextAccessor, UserManager<AppUser> userManager, IUnitOfWork unitOfWork)
         {
             _httpContextAccessor = httpContextAccessor;
