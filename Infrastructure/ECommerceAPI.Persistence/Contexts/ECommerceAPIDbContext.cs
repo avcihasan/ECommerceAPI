@@ -52,6 +52,10 @@ namespace ECommerceAPI.Persistence.Contexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Order>()
+              .HasIndex(o => o.OrderCode)
+              .IsUnique();
+
+            modelBuilder.Entity<Order>()
                 .HasKey(x => x.Id);
 
             modelBuilder.Entity<Order>()

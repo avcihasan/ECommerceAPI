@@ -11,9 +11,9 @@ namespace ECommerceAPI.SignalR.HubServices
 {
     public class OrderHubService : IOrderHubService
     {
-        readonly IHubContext<ProductHub> _hubContext;
+        readonly IHubContext<OrderHub> _hubContext;
 
-        public OrderHubService(IHubContext<ProductHub> hubContext)
+        public OrderHubService(IHubContext<OrderHub> hubContext)
         {
             _hubContext = hubContext;
         }

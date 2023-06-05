@@ -16,6 +16,7 @@ namespace ECommerceAPI.Persistence.Repositories
             _context = context;
             _dbSet = _context.Set<T>();
         }
+        public DbSet<T> Table => _context.Set<T>();
 
         public IQueryable<T> GetAll(bool tracking = true)
         {

@@ -15,6 +15,7 @@ namespace ECommerceAPI.Persistence.Repositories
             _context = context;
             _dbSet = _context.Set<T>();
         }
+        public DbSet<T> Table => _context.Set<T>();
         public async Task<bool> AddAsync(T entity)
         {
             EntityEntry entityEntry = await _dbSet.AddAsync(entity);

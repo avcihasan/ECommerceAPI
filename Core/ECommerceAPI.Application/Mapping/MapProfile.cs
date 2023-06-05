@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ECommerceAPI.Application.DTOs.BasketItemDTOs;
+using ECommerceAPI.Application.DTOs.OrderDTOs;
 using ECommerceAPI.Application.DTOs.ProductDTOs;
 using ECommerceAPI.Application.DTOs.UserDTOs;
 using ECommerceAPI.Application.Features.Commands.BasketCommands.AddItemToBasket;
@@ -10,6 +11,8 @@ using ECommerceAPI.Application.Features.Commands.ProductCommands.CreateProduct;
 using ECommerceAPI.Application.Features.Commands.ProductCommands.UpdateProduct;
 using ECommerceAPI.Application.Features.Commands.UserCommands.CreateUser;
 using ECommerceAPI.Application.Features.Queries.CategoryQueries.GetAllCategories;
+using ECommerceAPI.Application.Features.Queries.OrderQueries.GetAllOrders;
+using ECommerceAPI.Application.Features.Queries.OrderQueries.GetByIdOrder;
 using ECommerceAPI.Application.Features.Queries.ProductImageFileQueries.GetProductImages;
 using ECommerceAPI.Application.Features.Queries.ProductQueries.GetAllProducts;
 using ECommerceAPI.Application.Features.Queries.ProductQueries.GetByIdProduct;
@@ -41,6 +44,11 @@ namespace ECommerceAPI.Application.Mapping
 
             CreateMap<AddItemToBasketCommandRequest, CreateBasketItemDto>(); 
             CreateMap<UpdateQuantityCommandRequest, UpdateBasketItemDto>(); 
+
+            CreateMap<GetAllOrdersDto, GetAllOrdersQueryResponse>(); 
+            CreateMap<Order, GetSingleOrderDto>(); 
+            CreateMap<GetSingleOrderDto, GetByIdOrderQueryResponse>(); 
+
 
         }
     }

@@ -104,5 +104,18 @@ namespace ECommerceAPI.Persistence.Services
             _basketItem.Quantity = basketItem.Quantity;
             await _unitOfWork.SaveAsync();
         }
+
+        public async Task<decimal> GetBasketTotalPrice(string basketId)
+        {
+            decimal totalPrice = 0;
+
+            Basket basket= await _unitOfWork.BasketReadRepository.Table
+                .Include(x => x.BasketItems)
+                    .ThenInclude(x => x.Product)
+                .FirstOrDefaultAsync(x => x.Id == Guid.Parse(basketId));
+            foreach (var basketItem in basket.BasketItems)
+                totalPrice += basketItem.Quantity * basketItem.Product.Price;
+            return totalPrice;
+        }
     }
 }
