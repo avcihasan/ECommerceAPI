@@ -12,5 +12,7 @@ namespace ECommerceAPI.Application.Abstractions.Services
     {
         Task<TokenDto> LoginAsync(LoginUserDto loginUser, int tokenLife);
         Task<TokenDto> RefreshTokenLoginAsync(string refreshToken);
+        Task PasswordResetAsync(string email);
+        Task<bool> CheckPasswordResetTokenAsync(string resetToken, string userId);
     }
 }

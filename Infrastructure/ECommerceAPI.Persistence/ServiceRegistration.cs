@@ -35,7 +35,7 @@ namespace ECommerceAPI.Persistence
                 options.Password.RequireLowercase = false;
                 options.Password.RequireUppercase = false;
             }).AddEntityFrameworkStores<ECommerceAPIDbContext>()
-            .AddDefaultTokenProviders();
+            .AddDefaultTokenProviders().AddDefaultTokenProviders(); ;
            
 
 

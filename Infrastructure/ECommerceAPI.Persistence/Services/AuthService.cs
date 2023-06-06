@@ -7,6 +7,7 @@ using ECommerceAPI.Application.Features.Commands.UserCommands.LoginUser;
 using ECommerceAPI.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -18,18 +19,22 @@ namespace ECommerceAPI.Persistence.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly UserManager<AppUser> _userManager; 
+        private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ITokenHandler _tokenHandler;
         private readonly IUserService _userService;
+        readonly IMailService _mailService;
 
-        public AuthService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenHandler tokenHandler, IUserService userService)
+        public AuthService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenHandler tokenHandler, IUserService userService, IMailService mailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenHandler = tokenHandler;
             _userService = userService;
+            _mailService = mailService;
         }
+
+
 
         public async Task<TokenDto> LoginAsync(LoginUserDto loginUser, int tokenLifeMinute)
         {
@@ -43,14 +48,15 @@ namespace ECommerceAPI.Persistence.Services
 
             if (result.Succeeded)
             {
-                TokenDto token = _tokenHandler.CreateAccessToken(tokenLifeMinute,user);
+                TokenDto token = _tokenHandler.CreateAccessToken(tokenLifeMinute, user);
                 await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 15);
                 return token;
             }
-                
-            
+
+
             throw new Exception("Hatalı Giriş");
         }
+
 
 
         public async Task<TokenDto> RefreshTokenLoginAsync(string refreshToken)
@@ -58,12 +64,38 @@ namespace ECommerceAPI.Persistence.Services
             AppUser? user = await _userManager.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
             if (user != null && user?.RefreshTokenEndDate > DateTime.UtcNow)
             {
-                TokenDto token = _tokenHandler.CreateAccessToken(15,user);
+                TokenDto token = _tokenHandler.CreateAccessToken(15, user);
                 await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 15);
                 return token;
             }
             else
                 throw new Exception("Kullanıcı bulunamadı");
+        }
+
+        public async Task<bool> CheckPasswordResetTokenAsync(string resetToken, string userId)
+        {
+            AppUser user = await _userManager.FindByIdAsync(userId);
+            if (user is not null)
+            {
+                resetToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(resetToken));
+
+              return await _userManager.VerifyUserTokenAsync(user,_userManager.Options.Tokens.PasswordResetTokenProvider,"ResetPassword",resetToken);
+            }
+            return false;
+        }
+
+        public async Task PasswordResetAsync(string email)
+        {
+            AppUser user = await _userManager.FindByEmailAsync(email);
+            if (user is not null)
+            {
+                string resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+                byte[] tokenBytes = Encoding.UTF8.GetBytes(resetToken);
+                resetToken = WebEncoders.Base64UrlEncode(tokenBytes);
+
+                await _mailService.SendResetPasswordMailAsync(user.Email, user.Id, resetToken);
+            }
         }
     }
 }

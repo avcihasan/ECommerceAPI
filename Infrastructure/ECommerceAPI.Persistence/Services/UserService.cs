@@ -5,6 +5,7 @@ using ECommerceAPI.Application.DTOs.UserDTOs;
 using ECommerceAPI.Application.Features.Commands.UserCommands.CreateUser;
 using ECommerceAPI.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,6 +51,24 @@ namespace ECommerceAPI.Persistence.Services
             }
             else
                 throw new Exception("Kullanıcı bulunamadı");
+        }
+
+        public async Task UpdatePasswordAsync(string userId, string resetToken, string newPassword, string newPasswordConfirm)
+        {
+            if (!newPassword.Equals(newPasswordConfirm))
+                throw new Exception("Şifre yenileme hatası .. ");
+
+            AppUser user =await _userManager.FindByIdAsync(userId);
+            if (user is not null)
+            {
+                resetToken= Encoding.UTF8.GetString( WebEncoders.Base64UrlDecode(resetToken));
+
+                IdentityResult result =await _userManager.ResetPasswordAsync(user, resetToken, newPassword);
+                if (result.Succeeded)
+                    await _userManager.UpdateSecurityStampAsync(user);
+                else
+                    throw new Exception("Şifre yenileme hatası .. ");
+            }
         }
     }
 }
