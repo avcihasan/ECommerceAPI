@@ -15,6 +15,8 @@ namespace ECommerceAPI.Infrastructure.Services
             _configuration = configuration;
         }
 
+    
+
         public async Task SendMailAsync(string to, string subject, string body, bool isBodyHtml = true)
         {
             await SendMailAsync(new[] { to }, subject, body, isBodyHtml);
@@ -40,19 +42,16 @@ namespace ECommerceAPI.Infrastructure.Services
 
         public async Task SendResetPasswordMailAsync(string to, string userId, string resetToken)
         {
-            string mail=$"Merhaba<br>Eğer yeni şifre talebinde bulunduysanız aşağıdaki linkten şifrenizi yenileyebilirsiniz.<br><strong><a target=\"_blank\" href=\"{_configuration["AngularClientUrl"]}/update-password/{userId}/{resetToken}\">Yeni şifre talebi için tıklayınız...</a></strong><br><br><span style=\"font-size:12px;\">NOT : Eğer ki bu talep tarafınızca gerçekleştirilmemişse lütfen bu maili ciddiye almayınız.</span><br>Saygılarımızla...<br><br><br>NG - Mini|E-Ticaret";
+            string mail=$"Merhaba<br>Eğer yeni şifre talebinde bulunduysanız aşağıdaki linkten şifrenizi yenileyebilirsiniz.<br><strong><a target=\"_blank\" href=\"{_configuration["AngularClientUrl"]}/update-password/{userId}/{resetToken}\">Yeni şifre talebi için tıklayınız...</a></strong><br><br><span style=\"font-size:12px;\">NOT : Eğer ki bu talep tarafınızca gerçekleştirilmemişse lütfen bu maili ciddiye almayınız.</span><br>Saygılarımızla...<br><br><br>E-Ticaret";
 
+            await SendMailAsync(to, "Şifre Yenileme Talebi", mail);
+        }
 
-            //StringBuilder mail = new();
-            //mail.AppendLine("Merhaba<br>Eğer yeni şifre talebinde bulunduysanız aşağıdaki linkten şifrenizi yenileyebilirsiniz.<br><strong><a target=\"_blank\" href=\"");
-            //mail.AppendLine(_configuration["AngularClientUrl"]);
-            //mail.AppendLine("/update-password/");
-            //mail.AppendLine(userId);
-            //mail.AppendLine("/");
-            //mail.AppendLine(resetToken);
-            //mail.AppendLine("\">Yeni şifre talebi için tıklayınız...</a></strong><br><br><span style=\"font-size:12px;\">NOT : Eğer ki bu talep tarafınızca gerçekleştirilmemişse lütfen bu maili ciddiye almayınız.</span><br>Saygılarımızla...<br><br><br>NG - Mini|E-Ticaret");
+        public async Task SendCompletedOrderMailAsync(string to, string orderCode, DateTime orderDate, string userName, string userSurname)
+        {
+            string mail = $"Merhaba {userName} {userName},<br>{orderDate} tarihinde vermiş olduğunuz {orderCode} kodlu sipariş kargoya verilmiştir.<br><br><br>İyi Günler...<br>E-Ticaret";
 
-            await SendMailAsync(to, "Şifre Yenileme Talebi", mail.ToString());
+            await SendMailAsync(to, $"{orderCode} Kodlu Sipariş Hakkında", mail);
         }
     }
 }

@@ -13,5 +13,6 @@ namespace ECommerceAPI.Domain.Entities
         public string OrderCode { get; set; }
         public decimal TotalPrice { get; set; }
         public Basket Basket { get; set; }
+        public CompletedOrder ComplatedOrder { get; set; }
     }
 }

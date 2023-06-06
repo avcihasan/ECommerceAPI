@@ -1,4 +1,5 @@
-﻿using ECommerceAPI.Application.Features.Commands.OrderCommands.CreateOrder;
+﻿using ECommerceAPI.Application.Features.Commands.OrderCommands.CompleteOrder;
+using ECommerceAPI.Application.Features.Commands.OrderCommands.CreateOrder;
 using ECommerceAPI.Application.Features.Queries.OrderQueries.GetAllOrders;
 using ECommerceAPI.Application.Features.Queries.OrderQueries.GetByIdOrder;
 using ECommerceAPI.Application.Features.Queries.ProductQueries.GetAllProducts;
@@ -32,5 +33,10 @@ namespace ECommerceAPI.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOrderById([FromRoute] GetByIdOrderQueryRequest request)
             => Ok(await _mediator.Send(request));
+
+        [HttpGet("[action]/{id}")]
+        public async Task<IActionResult> CompleteOrder([FromRoute] CompleteOrderCommandRequest request)
+           => Ok(await _mediator.Send(request));
+
     }
 }

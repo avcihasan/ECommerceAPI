@@ -13,5 +13,6 @@ namespace ECommerceAPI.Application.DTOs.OrderDTOs
         public string OrderCode { get; set; }
         public DateTime CreatedDate { get; set; }
         public decimal TotalPrice { get; set; }
+        public bool Completed { get; set; }
     }
 }

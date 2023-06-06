@@ -1,6 +1,7 @@
 ﻿using ECommerceAPI.Application.Repositories.BasketItemRepositories;
 using ECommerceAPI.Application.Repositories.BasketRepositories;
 using ECommerceAPI.Application.Repositories.CategoryRepositories;
+using ECommerceAPI.Application.Repositories.CompletedOrderRepositories;
 using ECommerceAPI.Application.Repositories.FileRepositories;
 using ECommerceAPI.Application.Repositories.InvoiceFileRepositories;
 using ECommerceAPI.Application.Repositories.OrderRepositories;
@@ -11,6 +12,7 @@ using ECommerceAPI.Persistence.Contexts;
 using ECommerceAPI.Persistence.Repositories.BasketItemRepository;
 using ECommerceAPI.Persistence.Repositories.BasketRepository;
 using ECommerceAPI.Persistence.Repositories.CategoryRepositories;
+using ECommerceAPI.Persistence.Repositories.CompletedOrderRepositories;
 using ECommerceAPI.Persistence.Repositories.FileRepositories;
 using ECommerceAPI.Persistence.Repositories.InvoiceFileRepositories;
 using ECommerceAPI.Persistence.Repositories.OrderRepositories;
@@ -38,7 +40,8 @@ namespace ECommerceAPI.Persistence.UnitOfWorks
         public IBasketItemWriteRepository BasketItemWriteRepository { get; private set; }
         public IOrderWriteRepository OrderWriteRepository { get; private set; }
         public IOrderReadRepository OrderReadRepository { get; private set; }
-
+        public ICompletedOrderReadRepository CompletedOrderReadRepository { get; private set; }
+        public ICompletedOrderWriteRepository CompletedOrderWriteRepository { get; private set; }
         public UnitOfWork(ECommerceAPIDbContext context)
         {
             _context = context;
@@ -58,6 +61,8 @@ namespace ECommerceAPI.Persistence.UnitOfWorks
             BasketItemWriteRepository = new BasketItemWriteRepository(_context);
             OrderWriteRepository = new OrderWriteRepository(_context);
             OrderReadRepository = new OrderReadRepository(_context);
+            CompletedOrderReadRepository = new CompletedOrderReadRepository(_context);
+            CompletedOrderWriteRepository = new CompletedOrderWriteRepository(_context);
         }
 
 

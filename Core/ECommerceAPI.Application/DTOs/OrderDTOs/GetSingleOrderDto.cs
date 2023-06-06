@@ -16,6 +16,7 @@ namespace ECommerceAPI.Application.DTOs.OrderDTOs
         public DateTime CreatedDate { get; set; }
         public decimal  TotalPrice{ get; set; }
         public List<GetBasketItemsDto> BasketItems { get; set; }
+        public bool Completed { get; set; }
     }
 }
 

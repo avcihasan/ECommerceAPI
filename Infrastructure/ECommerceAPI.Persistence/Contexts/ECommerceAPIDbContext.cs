@@ -12,6 +12,7 @@ namespace ECommerceAPI.Persistence.Contexts
         { }
         public DbSet<Product> Products { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<CompletedOrder> ComplatedOrders { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<ECommerceAPI.Domain.Entities.File> Files { get; set; } 
         public DbSet<ProductImageFile> ProductImageFiles { get; set; }
@@ -51,6 +52,14 @@ namespace ECommerceAPI.Persistence.Contexts
        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<CompletedOrder>()
+                .HasKey(x => x.Id);
+            modelBuilder.Entity<CompletedOrder>()
+                .HasOne(x => x.Order)
+                .WithOne(x => x.ComplatedOrder)
+                .HasForeignKey<CompletedOrder>(x => x.Id);
+
+
             modelBuilder.Entity<Order>()
               .HasIndex(o => o.OrderCode)
               .IsUnique();
