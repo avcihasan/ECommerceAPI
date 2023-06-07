@@ -2,6 +2,7 @@
 using ECommerceAPI.Application.DTOs.BasketItemDTOs;
 using ECommerceAPI.Application.DTOs.OrderDTOs;
 using ECommerceAPI.Application.DTOs.ProductDTOs;
+using ECommerceAPI.Application.DTOs.RoleDTOs;
 using ECommerceAPI.Application.DTOs.UserDTOs;
 using ECommerceAPI.Application.Features.Commands.BasketCommands.AddItemToBasket;
 using ECommerceAPI.Application.Features.Commands.BasketCommands.UpdateQuantity;
@@ -16,6 +17,8 @@ using ECommerceAPI.Application.Features.Queries.OrderQueries.GetByIdOrder;
 using ECommerceAPI.Application.Features.Queries.ProductImageFileQueries.GetProductImages;
 using ECommerceAPI.Application.Features.Queries.ProductQueries.GetAllProducts;
 using ECommerceAPI.Application.Features.Queries.ProductQueries.GetByIdProduct;
+using ECommerceAPI.Application.Features.Queries.RoleQueries.GetAllRoles;
+using ECommerceAPI.Application.Features.Queries.RoleQueries.GetByIdRole;
 using ECommerceAPI.Domain.Entities;
 using ECommerceAPI.Domain.Entities.Identity;
 
@@ -47,7 +50,11 @@ namespace ECommerceAPI.Application.Mapping
 
             CreateMap<GetAllOrdersDto, GetAllOrdersQueryResponse>(); 
             CreateMap<Order, GetSingleOrderDto>(); 
-            CreateMap<GetSingleOrderDto, GetByIdOrderQueryResponse>(); 
+            CreateMap<GetSingleOrderDto, GetByIdOrderQueryResponse>();
+
+            CreateMap<AppRole, RoleDto>();
+            CreateMap<RoleDto, GetByIdRoleQueryResponse>();
+            CreateMap<RoleDto, GetAllRolesQueryResponse>();
 
 
         }

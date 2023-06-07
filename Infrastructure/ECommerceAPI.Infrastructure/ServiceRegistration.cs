@@ -21,6 +21,7 @@ namespace ECommerceAPI.Infrastructure
             service.AddScoped<IStorageService, StorageService>();
             service.AddScoped<ITokenHandler, TokenHandler>();
             service.AddScoped<IMailService, MailService>();
+            service.AddScoped<IConfigurationService, ConfigurationService>();
 
         }
 

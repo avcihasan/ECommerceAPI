@@ -1,4 +1,7 @@
-﻿using ECommerceAPI.Application.Features.Commands.ProdcutImageFileCommands.ChangeShowcaseProductImage;
+﻿using ECommerceAPI.Application.Attributes;
+using ECommerceAPI.Application.Consts;
+using ECommerceAPI.Application.Enums;
+using ECommerceAPI.Application.Features.Commands.ProdcutImageFileCommands.ChangeShowcaseProductImage;
 using ECommerceAPI.Application.Features.Commands.ProdcutImageFileCommands.DeleteProductImage;
 using ECommerceAPI.Application.Features.Commands.ProdcutImageFileCommands.UploadProductImage;
 using ECommerceAPI.Application.Features.Commands.ProductCommands.CreateProduct;
@@ -38,6 +41,7 @@ namespace ECommerceAPI.API.Controllers
         }
         [Authorize(AuthenticationSchemes = "Admin")]
         [HttpPost]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Products, ActionType = ActionType.Writing, Definition = "Create Product")]
         public async Task<IActionResult> CreateProduct(CreateProductCommandRequest createProductCommandRequest)
         {
             await _mediator.Send(createProductCommandRequest);
@@ -45,6 +49,7 @@ namespace ECommerceAPI.API.Controllers
         }
         [HttpDelete("{Id}")]
         [Authorize(AuthenticationSchemes = "Admin")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Products, ActionType = ActionType.Deleting, Definition = "Remove By Id Product")]
         public async Task<IActionResult> RemoveByIdProduct([FromRoute] RemoveByIdProductCommandRequest removeByIdProductCommandRequest)
         {
 
@@ -53,6 +58,7 @@ namespace ECommerceAPI.API.Controllers
 
         [HttpPut]
         [Authorize(AuthenticationSchemes = "Admin")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Products, ActionType = ActionType.Updating, Definition = "Update Product")]
         public async Task<IActionResult> UpdateProduct(UpdateProductCommandRequest updateProductCommandRequest)
         {
             await _mediator.Send(updateProductCommandRequest);
@@ -61,6 +67,7 @@ namespace ECommerceAPI.API.Controllers
 
         [HttpPost("[action]")]
         [Authorize(AuthenticationSchemes = "Admin")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Products, ActionType = ActionType.Writing, Definition = "Add Product To Category")]
         public async Task<IActionResult> AddProductToCategory(ProductAddToCategoryRequest productAddToCategoryRequest)
         {
             await _mediator.Send(productAddToCategoryRequest);
@@ -70,6 +77,7 @@ namespace ECommerceAPI.API.Controllers
 
         [HttpPost("[action]")]
         [Authorize(AuthenticationSchemes = "Admin")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Products, ActionType = ActionType.Writing, Definition = "Upload Product Image")]
         public async Task<IActionResult> UploadProductImage([FromQuery] UploadProductImageCommandRequest uploadProductImageCommandRequest)
         {
             uploadProductImageCommandRequest.Files = Request.Form.Files;
