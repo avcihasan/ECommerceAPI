@@ -1,4 +1,6 @@
-﻿using ECommerceAPI.Application.Attributes;
+﻿using Azure.Core;
+using ECommerceAPI.Application.Abstractions.Services;
+using ECommerceAPI.Application.Attributes;
 using ECommerceAPI.Application.Consts;
 using ECommerceAPI.Application.Enums;
 using ECommerceAPI.Application.Features.Commands.ProdcutImageFileCommands.ChangeShowcaseProductImage;
@@ -8,6 +10,7 @@ using ECommerceAPI.Application.Features.Commands.ProductCommands.CreateProduct;
 using ECommerceAPI.Application.Features.Commands.ProductCommands.ProductAddToCategory;
 using ECommerceAPI.Application.Features.Commands.ProductCommands.RemoveByIdProduct;
 using ECommerceAPI.Application.Features.Commands.ProductCommands.UpdateProduct;
+using ECommerceAPI.Application.Features.Commands.ProductCommands.UpdateStockQrCodeToProduct;
 using ECommerceAPI.Application.Features.Queries.ProductImageFileQueries.GetProductImages;
 using ECommerceAPI.Application.Features.Queries.ProductQueries.GetAllProducts;
 using ECommerceAPI.Application.Features.Queries.ProductQueries.GetByIdProduct;
@@ -22,10 +25,11 @@ namespace ECommerceAPI.API.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IMediator _mediator;
-
-        public ProductsController(IMediator mediator)
+        readonly IProductService _productService;
+        public ProductsController(IMediator mediator, IProductService productService)
         {
             _mediator = mediator;
+            _productService = productService;
         }
 
         [HttpGet]
@@ -110,5 +114,13 @@ namespace ECommerceAPI.API.Controllers
 
             return Ok();
         }
+
+        [HttpGet("[action]/{productId}")]
+        public async Task<IActionResult> GetQrCodeToProduct([FromRoute] string productId)
+            => File(await _productService.QrCodeToProductAsync(productId), "image/png");
+
+        [HttpPut("[action]")]
+        public async Task<IActionResult> UpdateStockQrCodeToProduct(UpdateStockQrCodeToProductCommandRequest request)
+            => Ok(await _mediator.Send(request));
     }
 }
