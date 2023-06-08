@@ -1,5 +1,6 @@
 using ECommerceAPI.API.Configurations.ColumnWriters;
 using ECommerceAPI.API.Extensions;
+using ECommerceAPI.API.Filters;
 using ECommerceAPI.Application;
 using ECommerceAPI.Application.Validatiors.ProductValidators;
 using ECommerceAPI.Infrastructure;
@@ -27,8 +28,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 
-builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>())
-    .ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<ValidationFilter>();
+    options.Filters.Add<RolePermissionFilter>();
+}).ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
 
 
 builder.Services.AddEndpointsApiExplorer();

@@ -3,7 +3,10 @@ using Azure.Core;
 using ECommerceAPI.Application.Abstractions.Services;
 using ECommerceAPI.Application.DTOs.UserDTOs;
 using ECommerceAPI.Application.Features.Commands.UserCommands.CreateUser;
+using ECommerceAPI.Application.UnitOfWorks;
+using ECommerceAPI.Domain.Entities;
 using ECommerceAPI.Domain.Entities.Identity;
+using ECommerceAPI.Persistence.UnitOfWorks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
@@ -19,13 +22,15 @@ namespace ECommerceAPI.Persistence.Services
     {
         private readonly IMapper _mapper;
         private readonly UserManager<AppUser> _userManager;
+        readonly IUnitOfWork _unitOfWork;
 
         public int TotalUserCount => _userManager.Users.Count();
 
-        public UserService(IMapper mapper, UserManager<AppUser> userManager)
+        public UserService(IMapper mapper, UserManager<AppUser> userManager, IUnitOfWork unitOfWork)
         {
             _mapper = mapper;
             _userManager = userManager;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<CreateUserResponseDto> CreateUserAsync(CreateUserDto createUser)
@@ -77,9 +82,11 @@ namespace ECommerceAPI.Persistence.Services
         public async Task<List<UserDto>> GetAllUsersAsync(int page, int size)
             => _mapper.Map<List<UserDto>>(await _userManager.Users.Skip(page).Take(size).ToListAsync());
 
-        public async Task<string[]> GetRolesToUserAsync(string userId)
+        public async Task<string[]> GetRolesToUserAsync(string userIdOrName)
         {
-            AppUser user = await _userManager.FindByIdAsync(userId);
+            AppUser user = await _userManager.FindByIdAsync(userIdOrName);
+            if (user == null)
+                user = await _userManager.FindByNameAsync(userIdOrName);
             if (user is null)
                 throw new Exception("Kullanıcı bulunamadı");
             var roles = await _userManager.GetRolesAsync(user);
@@ -98,6 +105,32 @@ namespace ECommerceAPI.Persistence.Services
             IdentityResult addResult = await _userManager.AddToRolesAsync(user, roles);
             if (!addResult.Succeeded)
                 throw new Exception("Rol ekleme hatası");
+        }
+
+        public async Task<bool> HasRolePermissionToEndpointAsync(string name, string code)
+        {
+            var userRoles = await GetRolesToUserAsync(name);
+
+            if (!userRoles.Any())
+                return false;
+
+            Endpoint endpoint = await _unitOfWork.EndpointReadRepository.Table
+                     .Include(e => e.Roles)
+                     .FirstOrDefaultAsync(e => e.Code == code);
+
+            if (endpoint == null)
+                return false;
+
+            var endpointRoles = endpoint.Roles.Select(r => r.Name);
+
+            foreach (var userRole in userRoles)
+            {
+                foreach (var endpointRole in endpointRoles)
+                    if (userRole == endpointRole)
+                        return true;
+            }
+
+            return false;
         }
     }
 }
