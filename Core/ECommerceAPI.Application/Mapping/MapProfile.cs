@@ -40,8 +40,9 @@ namespace ECommerceAPI.Application.Mapping
 
             CreateMap<CreateUserCommandRequest, CreateUserDto>();
             CreateMap<CreateUserDto, AppUser>();
+            CreateMap<AppUser, UserDto>();
 
-            
+
             CreateMap<Product, GetProductDto>(); 
             CreateMap<ProductImageFile, GetProductImagesQueryResponse>(); 
 
@@ -55,6 +56,7 @@ namespace ECommerceAPI.Application.Mapping
             CreateMap<AppRole, RoleDto>();
             CreateMap<RoleDto, GetByIdRoleQueryResponse>();
             CreateMap<RoleDto, GetAllRolesQueryResponse>();
+
 
 
         }

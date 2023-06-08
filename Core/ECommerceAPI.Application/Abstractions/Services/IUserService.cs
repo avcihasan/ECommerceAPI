@@ -10,8 +10,12 @@ namespace ECommerceAPI.Application.Abstractions.Services
 {
     public interface IUserService
     {
+        public int TotalUserCount { get; }
         Task<CreateUserResponseDto> CreateUserAsync(CreateUserDto createUser);
         Task UpdateRefreshToken(string refreshToken, AppUser user, DateTime accessTokenDate, int addOnAccessTokenDate);
         Task UpdatePasswordAsync(string userId, string resetToken, string newPassword, string newPasswordConfirm);
+        Task<List<UserDto>> GetAllUsersAsync(int page, int size);
+        Task<string[]> GetRolesToUserAsync(string userId);
+        Task AssignRoleToUserAsync(string userId, string[] roles);
     }
 }

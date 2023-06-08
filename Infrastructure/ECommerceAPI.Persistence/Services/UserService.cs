@@ -6,6 +6,7 @@ using ECommerceAPI.Application.Features.Commands.UserCommands.CreateUser;
 using ECommerceAPI.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,8 @@ namespace ECommerceAPI.Persistence.Services
     {
         private readonly IMapper _mapper;
         private readonly UserManager<AppUser> _userManager;
+
+        public int TotalUserCount => _userManager.Users.Count();
 
         public UserService(IMapper mapper, UserManager<AppUser> userManager)
         {
@@ -58,17 +61,43 @@ namespace ECommerceAPI.Persistence.Services
             if (!newPassword.Equals(newPasswordConfirm))
                 throw new Exception("Şifre yenileme hatası .. ");
 
-            AppUser user =await _userManager.FindByIdAsync(userId);
+            AppUser user = await _userManager.FindByIdAsync(userId);
             if (user is not null)
             {
-                resetToken= Encoding.UTF8.GetString( WebEncoders.Base64UrlDecode(resetToken));
+                resetToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(resetToken));
 
-                IdentityResult result =await _userManager.ResetPasswordAsync(user, resetToken, newPassword);
+                IdentityResult result = await _userManager.ResetPasswordAsync(user, resetToken, newPassword);
                 if (result.Succeeded)
                     await _userManager.UpdateSecurityStampAsync(user);
                 else
                     throw new Exception("Şifre yenileme hatası .. ");
             }
+        }
+
+        public async Task<List<UserDto>> GetAllUsersAsync(int page, int size)
+            => _mapper.Map<List<UserDto>>(await _userManager.Users.Skip(page).Take(size).ToListAsync());
+
+        public async Task<string[]> GetRolesToUserAsync(string userId)
+        {
+            AppUser user = await _userManager.FindByIdAsync(userId);
+            if (user is null)
+                throw new Exception("Kullanıcı bulunamadı");
+            var roles = await _userManager.GetRolesAsync(user);
+            return roles.ToArray();
+        }
+
+        public async Task AssignRoleToUserAsync(string userId, string[] roles)
+        {
+            AppUser user = await _userManager.FindByIdAsync(userId);
+            if (user is null)
+                throw new Exception("Kullanıcı bulunamadı");
+            IList<string> _roles = await _userManager.GetRolesAsync(user);
+            IdentityResult removeResult = await _userManager.RemoveFromRolesAsync(user, _roles);
+            if (!removeResult.Succeeded)
+                throw new Exception("Rol silme hatası");
+            IdentityResult addResult = await _userManager.AddToRolesAsync(user, roles);
+            if (!addResult.Succeeded)
+                throw new Exception("Rol ekleme hatası");
         }
     }
 }
