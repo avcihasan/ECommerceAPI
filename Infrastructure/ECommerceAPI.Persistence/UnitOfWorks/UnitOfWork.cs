@@ -2,6 +2,8 @@
 using ECommerceAPI.Application.Repositories.BasketRepositories;
 using ECommerceAPI.Application.Repositories.CategoryRepositories;
 using ECommerceAPI.Application.Repositories.CompletedOrderRepositories;
+using ECommerceAPI.Application.Repositories.ControllerRepositories;
+using ECommerceAPI.Application.Repositories.EndpointRepositories;
 using ECommerceAPI.Application.Repositories.FileRepositories;
 using ECommerceAPI.Application.Repositories.InvoiceFileRepositories;
 using ECommerceAPI.Application.Repositories.OrderRepositories;
@@ -13,6 +15,8 @@ using ECommerceAPI.Persistence.Repositories.BasketItemRepository;
 using ECommerceAPI.Persistence.Repositories.BasketRepository;
 using ECommerceAPI.Persistence.Repositories.CategoryRepositories;
 using ECommerceAPI.Persistence.Repositories.CompletedOrderRepositories;
+using ECommerceAPI.Persistence.Repositories.ControllerRepositories;
+using ECommerceAPI.Persistence.Repositories.EndpointRepositories;
 using ECommerceAPI.Persistence.Repositories.FileRepositories;
 using ECommerceAPI.Persistence.Repositories.InvoiceFileRepositories;
 using ECommerceAPI.Persistence.Repositories.OrderRepositories;
@@ -42,6 +46,10 @@ namespace ECommerceAPI.Persistence.UnitOfWorks
         public IOrderReadRepository OrderReadRepository { get; private set; }
         public ICompletedOrderReadRepository CompletedOrderReadRepository { get; private set; }
         public ICompletedOrderWriteRepository CompletedOrderWriteRepository { get; private set; }
+        public IControllerReadRepository ControllerReadRepository { get; private set; }
+        public IControllerWriteRepository ControllerWriteRepository { get; private set; }
+        public IEndpointReadRepository EndpointReadRepository { get; private set; }
+        public IEndpointWriteRepository EndpointWriteRepository { get; private set; }
         public UnitOfWork(ECommerceAPIDbContext context)
         {
             _context = context;
@@ -63,6 +71,10 @@ namespace ECommerceAPI.Persistence.UnitOfWorks
             OrderReadRepository = new OrderReadRepository(_context);
             CompletedOrderReadRepository = new CompletedOrderReadRepository(_context);
             CompletedOrderWriteRepository = new CompletedOrderWriteRepository(_context);
+            ControllerReadRepository = new ControllerReadRepository(_context);
+            ControllerWriteRepository = new ControllerWriteRepository(_context);
+            EndpointWriteRepository = new EndpointWriteRepository(_context);
+            EndpointReadRepository = new EndpointReadRepository(_context);
         }
 
 

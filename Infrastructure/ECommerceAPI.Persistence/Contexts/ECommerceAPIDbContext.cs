@@ -17,9 +17,11 @@ namespace ECommerceAPI.Persistence.Contexts
         public DbSet<ECommerceAPI.Domain.Entities.File> Files { get; set; } 
         public DbSet<ProductImageFile> ProductImageFiles { get; set; }
         public DbSet<InvoiceFile> InvoiceFiles { get; set; }
+        public DbSet<Controller> Controllers { get; set; }
+        public DbSet<Endpoint> Endpoints { get; set; }
 
 
-        
+
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {

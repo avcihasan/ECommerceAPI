@@ -3,6 +3,8 @@ using ECommerceAPI.Application.Repositories.BasketItemRepositories;
 using ECommerceAPI.Application.Repositories.BasketRepositories;
 using ECommerceAPI.Application.Repositories.CategoryRepositories;
 using ECommerceAPI.Application.Repositories.CompletedOrderRepositories;
+using ECommerceAPI.Application.Repositories.ControllerRepositories;
+using ECommerceAPI.Application.Repositories.EndpointRepositories;
 using ECommerceAPI.Application.Repositories.FileRepositories;
 using ECommerceAPI.Application.Repositories.InvoiceFileRepositories;
 using ECommerceAPI.Application.Repositories.OrderRepositories;
@@ -37,8 +39,15 @@ namespace ECommerceAPI.Application.UnitOfWorks
 
         IOrderWriteRepository OrderWriteRepository { get; }
         IOrderReadRepository OrderReadRepository { get; }
+
         ICompletedOrderReadRepository CompletedOrderReadRepository { get; }
         ICompletedOrderWriteRepository CompletedOrderWriteRepository { get; }
+
+        IControllerReadRepository ControllerReadRepository { get; }
+        IControllerWriteRepository ControllerWriteRepository { get; }
+
+        IEndpointReadRepository EndpointReadRepository { get; }
+        IEndpointWriteRepository EndpointWriteRepository { get; }
 
         Task SaveAsync();
     }
