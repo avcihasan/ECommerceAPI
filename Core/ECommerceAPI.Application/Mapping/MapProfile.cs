@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ECommerceAPI.Application.DTOs.BasketItemDTOs;
+using ECommerceAPI.Application.DTOs.CategoryDTOs;
 using ECommerceAPI.Application.DTOs.OrderDTOs;
 using ECommerceAPI.Application.DTOs.ProductDTOs;
 using ECommerceAPI.Application.DTOs.RoleDTOs;
@@ -28,15 +29,22 @@ namespace ECommerceAPI.Application.Mapping
     {
         public MapProfile()
         {
-            CreateMap<CreateProductCommandRequest, Product>();
-            CreateMap<Product,GetByIdProductQueryResponse>();
+            CreateMap<CreateProductCommandRequest, CreateProductDto>();
             CreateMap<Product,GetAllProductsQueryResponse>();
-            CreateMap<UpdateProductCommandRequest, Product>();
+            CreateMap<UpdateProductCommandRequest, UpdateProductDto>();
+            CreateMap<CreateProductDto, Product>();
+            CreateMap<UpdateProductDto, Product>();
+            CreateMap<Product, GetProductDto>();
+            CreateMap<GetProductDto, GetByIdProductQueryResponse>();
 
 
-            CreateMap<CreateCategoryCommandRequest,Category>();
+            CreateMap<CreateCategoryCommandRequest, CreateCategoryDto>();
             CreateMap<Category, GetAllCategoriesQueryResponse>();
-            CreateMap<UpdateCategoryCommandRequest, Category>();
+            CreateMap<UpdateCategoryCommandRequest, UpdateCategoryDto>(); 
+            CreateMap<CreateCategoryDto, Category>();
+            CreateMap<UpdateCategoryDto, Category>();
+            CreateMap<Category, GetCategoryDto>(); 
+            CreateMap<GetCategoryDto, GetAllCategoriesQueryResponse>(); 
 
             CreateMap<CreateUserCommandRequest, CreateUserDto>();
             CreateMap<CreateUserDto, AppUser>();

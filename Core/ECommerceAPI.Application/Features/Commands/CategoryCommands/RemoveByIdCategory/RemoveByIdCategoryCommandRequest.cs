@@ -9,6 +9,6 @@ namespace ECommerceAPI.Application.Features.Commands.CategoryCommands.RemoveById
 {
     public class RemoveByIdCategoryCommandRequest:IRequest<RemoveByIdCategoryCommandResponse>
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
     }
 }

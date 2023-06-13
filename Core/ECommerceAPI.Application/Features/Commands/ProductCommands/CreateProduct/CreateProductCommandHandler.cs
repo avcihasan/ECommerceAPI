@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using ECommerceAPI.Application.Abstractions.Hubs;
+using ECommerceAPI.Application.Abstractions.Services;
+using ECommerceAPI.Application.DTOs.ProductDTOs;
 using ECommerceAPI.Application.Repositories.ProductRepositories;
 using ECommerceAPI.Application.UnitOfWorks;
 using ECommerceAPI.Domain.Entities;
@@ -14,25 +16,21 @@ namespace ECommerceAPI.Application.Features.Commands.ProductCommands.CreateProdu
 {
     internal class CreateProductCommandHandler : IRequestHandler<CreateProductCommandRequest, CreateProductCommandResponse>
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         readonly IProductHubServcie _hubService;
-
-        public CreateProductCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, IProductHubServcie hubService)
+        readonly IProductService _productService;
+        public CreateProductCommandHandler(IMapper mapper, IProductHubServcie hubService, IProductService productService)
         {
-            _unitOfWork = unitOfWork;
             _mapper = mapper;
             _hubService = hubService;
+            _productService = productService;
         }
 
         public async Task<CreateProductCommandResponse> Handle(CreateProductCommandRequest request, CancellationToken cancellationToken)
         {
-            await _unitOfWork.ProductWriteRepository.AddAsync(_mapper.Map<Product>(request));
-            await _unitOfWork.SaveAsync();
+            await _productService.CreateProductAsync(_mapper.Map<CreateProductDto>(request));
             await _hubService.ProductAddedMessageAsync($"{request.Name} isimli ürün eklendi fiyatı {request.Price}.");
             return new();
-
-
         }
     }
 }

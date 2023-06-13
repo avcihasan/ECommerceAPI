@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ECommerceAPI.Application.Abstractions.Services;
 using ECommerceAPI.Application.Repositories.ProductRepositories;
 using ECommerceAPI.Application.UnitOfWorks;
 using ECommerceAPI.Domain.Entities;
@@ -15,17 +16,17 @@ namespace ECommerceAPI.Application.Features.Queries.ProductQueries.GetByIdProduc
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public GetByIdProductHandler(IMapper mapper, IUnitOfWork unitOfWork)
+        readonly IProductService _productService;
+        public GetByIdProductHandler(IMapper mapper, IUnitOfWork unitOfWork, IProductService productService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _productService = productService;
         }
 
         public async Task<GetByIdProductQueryResponse> Handle(GetByIdProductQueryRequest request, CancellationToken cancellationToken)
         {
-            Product p =await _unitOfWork.ProductReadRepository.GetByIdProductAllPropertiesAsync(request.Id);
-          
-            return _mapper.Map<GetByIdProductQueryResponse>(p);
+            return _mapper.Map<GetByIdProductQueryResponse>(await _productService.GetroductByIdAsync(request.Id));
         }
     }
 }

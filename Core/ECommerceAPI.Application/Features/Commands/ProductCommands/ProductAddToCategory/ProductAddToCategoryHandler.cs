@@ -1,4 +1,5 @@
-﻿using ECommerceAPI.Application.Repositories.ProductRepositories;
+﻿using ECommerceAPI.Application.Abstractions.Services;
+using ECommerceAPI.Application.Repositories.ProductRepositories;
 using ECommerceAPI.Application.UnitOfWorks;
 using MediatR;
 using System;
@@ -11,17 +12,15 @@ namespace ECommerceAPI.Application.Features.Commands.ProductCommands.ProductAddT
 {
     public class ProductAddToCategoryHandler : IRequestHandler<ProductAddToCategoryRequest, ProductAddToCategoryResponse>
     {
-        private readonly IUnitOfWork _unitOfWork;
-
-        public ProductAddToCategoryHandler(IUnitOfWork unitOfWork)
+        readonly IProductService _productService;
+        public ProductAddToCategoryHandler(IProductService productService)
         {
-            _unitOfWork = unitOfWork;
+            _productService = productService;
         }
 
         public async Task<ProductAddToCategoryResponse> Handle(ProductAddToCategoryRequest request, CancellationToken cancellationToken)
         {
-           await _unitOfWork.ProductWriteRepository.AddCategoryByProductId(request.ProductId, request.CategoryId);
-           await _unitOfWork.SaveAsync();
+            await _productService.ProductAddToCategoryAsync(request.ProductId, request.CategoryId);
            return new();
         }
     }

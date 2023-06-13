@@ -1,4 +1,6 @@
-﻿using ECommerceAPI.Application.Repositories.ProductRepositories;
+﻿using ECommerceAPI.Application.Abstractions.Services;
+using ECommerceAPI.Application.DTOs.ProductDTOs;
+using ECommerceAPI.Application.Repositories.ProductRepositories;
 using ECommerceAPI.Application.UnitOfWorks;
 using ECommerceAPI.Domain.Entities;
 using MediatR;
@@ -8,15 +10,16 @@ namespace ECommerceAPI.Application.Features.Queries.ProductImageFileQueries.GetP
 {
     public class GetProductImagesQueryHandler : IRequestHandler<GetProductImagesQueryRequest, List<GetProductImagesQueryResponse>>
     {
-        private readonly IUnitOfWork _unitOfWork;
-        public GetProductImagesQueryHandler(IUnitOfWork unitOfWork)
+        readonly IProductService _productService;
+
+        public GetProductImagesQueryHandler(IProductService productService)
         {
-            _unitOfWork = unitOfWork;
+            _productService = productService;
         }
 
         public async Task<List<GetProductImagesQueryResponse>> Handle(GetProductImagesQueryRequest request, CancellationToken cancellationToken)
         {
-            Product product = await _unitOfWork.ProductReadRepository.GetByIdProductAllPropertiesAsync(request.Id);
+            GetProductDto product = await _productService.GetroductByIdAsync(request.Id);
 
             return product.ProductImageFiles.Select(x => new GetProductImagesQueryResponse
             {

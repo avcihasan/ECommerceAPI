@@ -1,4 +1,5 @@
-﻿using ECommerceAPI.Application.UnitOfWorks;
+﻿using ECommerceAPI.Application.Abstractions.Services;
+using ECommerceAPI.Application.UnitOfWorks;
 using MediatR;
 
 namespace ECommerceAPI.Application.Features.Commands.ProductCommands.RemoveByIdProduct
@@ -6,18 +7,16 @@ namespace ECommerceAPI.Application.Features.Commands.ProductCommands.RemoveByIdP
     public class RemoveByIdProductCommandHandler : IRequestHandler<RemoveByIdProductCommandRequest, RemoveByIdProductCommandResponse>
     {
         private readonly IUnitOfWork _unitOfWork;
-
-        public RemoveByIdProductCommandHandler(IUnitOfWork unitOfWork)
+        readonly IProductService _productService;
+        public RemoveByIdProductCommandHandler(IUnitOfWork unitOfWork, IProductService productService)
         {
             _unitOfWork = unitOfWork;
+            _productService = productService;
         }
 
         public async Task<RemoveByIdProductCommandResponse> Handle(RemoveByIdProductCommandRequest request, CancellationToken cancellationToken)
         {
-         
-            await _unitOfWork.ProductWriteRepository.RemoveByIdAsync(request.Id);
-           
-            await _unitOfWork.SaveAsync();
+            await _productService.RemoveProductByIdAsync(request.Id);
             return new();
         }
     }

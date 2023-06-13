@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using ECommerceAPI.Application.Abstractions.Services;
+using ECommerceAPI.Application.DTOs.CategoryDTOs;
 using ECommerceAPI.Application.Repositories.CategoryRepositories;
 using ECommerceAPI.Application.UnitOfWorks;
 using ECommerceAPI.Domain.Entities;
@@ -13,20 +15,18 @@ namespace ECommerceAPI.Application.Features.Commands.CategoryCommands.CreateCate
 {
     public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommandRequest, CreateCategoryCommandResponse>
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        readonly ICategoryService _categoryService;
 
-        public CreateCategoryCommandHandler( IUnitOfWork unitOfWork, IMapper mapper)
+        public CreateCategoryCommandHandler( IMapper mapper, ICategoryService categoryService)
         {
-            _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _categoryService = categoryService;
         }
 
         public async Task<CreateCategoryCommandResponse> Handle(CreateCategoryCommandRequest request, CancellationToken cancellationToken)
         {
-            Category category = _mapper.Map<Category>(request);
-            await _unitOfWork.CategoryWriteRepository.AddAsync(category);
-            await _unitOfWork.SaveAsync();
+            await _categoryService.CreateCategoryAsync(_mapper.Map<CreateCategoryDto>(request));
             return new();
         }
     }

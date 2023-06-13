@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using ECommerceAPI.Application.Abstractions.Services;
+using ECommerceAPI.Application.DTOs.ProductDTOs;
 using ECommerceAPI.Application.Repositories.ProductRepositories;
 using ECommerceAPI.Application.UnitOfWorks;
 using ECommerceAPI.Domain.Entities;
@@ -13,20 +15,17 @@ namespace ECommerceAPI.Application.Features.Commands.ProductCommands.UpdateProdu
 {
     internal class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommandRequest, UpdateProductCommandResponse>
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-
-        public UpdateProductCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        readonly IProductService _productService;
+        public UpdateProductCommandHandler(IMapper mapper, IProductService productService)
         {
-            _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _productService = productService;
         }
 
         public async Task<UpdateProductCommandResponse> Handle(UpdateProductCommandRequest request, CancellationToken cancellationToken)
         {
-            Product product = _mapper.Map<Product>(request);
-            _unitOfWork.ProductWriteRepository.Update(product);
-            await _unitOfWork.SaveAsync();
+            await _productService.UpdateProductAsync(_mapper.Map<UpdateProductDto>(request));
             return new();
         }
     }
