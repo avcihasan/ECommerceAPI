@@ -13,9 +13,9 @@ namespace ECommerceAPI.Application.Features.Commands.ProdcutImageFileCommands.De
 {
     internal class DeleteProductImageCommandHandler : IRequestHandler<DeleteProductImageCommandRequest, DeleteProductImageCommandResponse>
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IRepositoryManager _unitOfWork;
 
-        public DeleteProductImageCommandHandler(IUnitOfWork unitOfWork)
+        public DeleteProductImageCommandHandler(IRepositoryManager unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }

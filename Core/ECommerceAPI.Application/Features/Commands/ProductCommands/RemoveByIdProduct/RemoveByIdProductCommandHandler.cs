@@ -6,17 +6,16 @@ namespace ECommerceAPI.Application.Features.Commands.ProductCommands.RemoveByIdP
 {
     public class RemoveByIdProductCommandHandler : IRequestHandler<RemoveByIdProductCommandRequest, RemoveByIdProductCommandResponse>
     {
-        private readonly IUnitOfWork _unitOfWork;
-        readonly IProductService _productService;
-        public RemoveByIdProductCommandHandler(IUnitOfWork unitOfWork, IProductService productService)
+        readonly IServiceManager _serviceManager;
+
+        public RemoveByIdProductCommandHandler(IServiceManager serviceManager)
         {
-            _unitOfWork = unitOfWork;
-            _productService = productService;
+            _serviceManager = serviceManager;
         }
 
         public async Task<RemoveByIdProductCommandResponse> Handle(RemoveByIdProductCommandRequest request, CancellationToken cancellationToken)
         {
-            await _productService.RemoveProductByIdAsync(request.Id);
+            await _serviceManager.ProductService.RemoveProductByIdAsync(request.Id);
             return new();
         }
     }

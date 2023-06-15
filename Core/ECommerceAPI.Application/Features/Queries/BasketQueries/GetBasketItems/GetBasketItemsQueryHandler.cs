@@ -1,4 +1,5 @@
 ﻿using ECommerceAPI.Application.Abstractions.Services;
+using ECommerceAPI.Application.UnitOfWorks;
 using ECommerceAPI.Domain.Entities;
 using MediatR;
 using System;
@@ -11,17 +12,17 @@ namespace ECommerceAPI.Application.Features.Queries.BasketQueries.GetBasketItems
 {
     public class GetBasketItemsQueryHandler : IRequestHandler<GetBasketItemsQueryRequest, List<GetBasketItemsQueryResponse>>
     {
-        readonly IBasketService _basketService;
+        readonly IServiceManager _serviceManager;
 
-        public GetBasketItemsQueryHandler(IBasketService basketService)
+        public GetBasketItemsQueryHandler(IServiceManager serviceManager)
         {
-            _basketService = basketService;
+            _serviceManager = serviceManager;
         }
 
         public async Task<List<GetBasketItemsQueryResponse>> Handle(GetBasketItemsQueryRequest request, CancellationToken cancellationToken)
         {
 
-            List<BasketItem> baketItems = await _basketService.GetBasketItemsAsync();
+            List<BasketItem> baketItems = await _serviceManager.BasketService.GetBasketItemsAsync();
 
             return baketItems.Select(x => new GetBasketItemsQueryResponse
             {

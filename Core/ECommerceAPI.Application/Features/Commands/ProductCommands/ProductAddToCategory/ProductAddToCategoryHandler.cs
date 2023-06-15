@@ -12,15 +12,16 @@ namespace ECommerceAPI.Application.Features.Commands.ProductCommands.ProductAddT
 {
     public class ProductAddToCategoryHandler : IRequestHandler<ProductAddToCategoryRequest, ProductAddToCategoryResponse>
     {
-        readonly IProductService _productService;
-        public ProductAddToCategoryHandler(IProductService productService)
+        readonly IServiceManager _serviceManager;
+
+        public ProductAddToCategoryHandler(IServiceManager serviceManager)
         {
-            _productService = productService;
+            _serviceManager = serviceManager;
         }
 
         public async Task<ProductAddToCategoryResponse> Handle(ProductAddToCategoryRequest request, CancellationToken cancellationToken)
         {
-            await _productService.ProductAddToCategoryAsync(request.ProductId, request.CategoryId);
+            await _serviceManager.ProductService.ProductAddToCategoryAsync(request.ProductId, request.CategoryId);
            return new();
         }
     }

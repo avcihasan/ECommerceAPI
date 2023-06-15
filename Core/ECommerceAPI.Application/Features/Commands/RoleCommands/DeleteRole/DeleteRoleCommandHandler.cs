@@ -1,4 +1,5 @@
 ﻿using ECommerceAPI.Application.Abstractions.Services;
+using ECommerceAPI.Application.UnitOfWorks;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -10,16 +11,16 @@ namespace ECommerceAPI.Application.Features.Commands.RoleCommands.DeleteRole
 {
     public class DeleteRoleCommandHandler : IRequestHandler<DeleteRoleCommandRequest, DeleteRoleCommandResponse>
     {
-        readonly IRoleService _roleService;
+        readonly IServiceManager _serviceManager;
 
-        public DeleteRoleCommandHandler(IRoleService roleService)
+        public DeleteRoleCommandHandler(IServiceManager serviceManager)
         {
-            _roleService = roleService;
+            _serviceManager = serviceManager;
         }
 
         public async Task<DeleteRoleCommandResponse> Handle(DeleteRoleCommandRequest request, CancellationToken cancellationToken)
         {
-            await _roleService.DeleteRoleAsync(request.Id);
+            await _serviceManager.RoleService.DeleteRoleAsync(request.Id);
             return new();
         }
     }

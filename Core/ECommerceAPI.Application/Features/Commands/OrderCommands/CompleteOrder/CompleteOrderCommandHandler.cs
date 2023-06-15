@@ -1,5 +1,6 @@
 ﻿using ECommerceAPI.Application.Abstractions.Services;
 using ECommerceAPI.Application.DTOs.OrderDTOs;
+using ECommerceAPI.Application.UnitOfWorks;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -11,20 +12,18 @@ namespace ECommerceAPI.Application.Features.Commands.OrderCommands.CompleteOrder
 {
     public class CompleteOrderCommandHandler : IRequestHandler<CompleteOrderCommandRequest, CompleteOrderCommandResponse>
     {
-        readonly IOrderService _orderService;
-        readonly IMailService _mailService;
+        readonly IServiceManager _serviceManager;
 
-        public CompleteOrderCommandHandler(IOrderService orderService, IMailService mailService)
+        public CompleteOrderCommandHandler(IServiceManager serviceManager)
         {
-            _orderService = orderService;
-            _mailService = mailService;
+            _serviceManager = serviceManager;
         }
 
         public async Task<CompleteOrderCommandResponse> Handle(CompleteOrderCommandRequest request, CancellationToken cancellationToken)
         {
-          CompletedOrderDto dto= await _orderService.CompleteOrderAsync(request.Id);
+          CompletedOrderDto dto= await _serviceManager.OrderService.CompleteOrderAsync(request.Id);
             if (dto.IsCompleted)
-                await _mailService.SendCompletedOrderMailAsync(dto.Email,dto.OrderCode,dto.OrderDate,dto.UserName,dto.UserSurname);
+                await _serviceManager.MailService.SendCompletedOrderMailAsync(dto.Email,dto.OrderCode,dto.OrderDate,dto.UserName,dto.UserSurname);
 
 
 

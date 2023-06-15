@@ -1,5 +1,6 @@
 ﻿using ECommerceAPI.Application.Abstractions.Hubs;
 using ECommerceAPI.Application.Abstractions.Services;
+using ECommerceAPI.Application.UnitOfWorks;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -11,27 +12,23 @@ namespace ECommerceAPI.Application.Features.Commands.OrderCommands.CreateOrder
 {
     public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommandRequest, CreateOrderCommandResponse>
     {
-        readonly IOrderService _orderService;
-        readonly IBasketService _basketService;
-        readonly IOrderHubService _orderHubService;
+        readonly IServiceManager _serviceManager;
 
-        public CreateOrderCommandHandler(IOrderService orderService, IBasketService basketService, IOrderHubService orderHubService)
+        public CreateOrderCommandHandler(IServiceManager serviceManager)
         {
-            _orderService = orderService;
-            _basketService = basketService;
-            _orderHubService = orderHubService;
+            _serviceManager = serviceManager;
         }
 
         public async Task<CreateOrderCommandResponse> Handle(CreateOrderCommandRequest request, CancellationToken cancellationToken)
         {
-           await _orderService.CreateOrderAsync(new()
+           await _serviceManager.OrderService.CreateOrderAsync(new()
             {
                 Address = request.Address,
                 Description = request.Description,
-                BasketId = _basketService.GetUserActiveBasket.Id.ToString()
+                BasketId = _serviceManager.BasketService.GetUserActiveBasket.Id.ToString()
 
             });
-            await _orderHubService.OrderAddedMessageAsync("Yeni bir sipariş var ...");
+            await _serviceManager.OrderHubService.OrderAddedMessageAsync("Yeni bir sipariş var ...");
             return new();
         }
     }

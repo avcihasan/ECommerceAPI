@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ECommerceAPI.Application.Abstractions.Services;
 using ECommerceAPI.Application.DTOs.UserDTOs;
+using ECommerceAPI.Application.UnitOfWorks;
 using ECommerceAPI.Domain.Entities.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -14,18 +15,18 @@ namespace ECommerceAPI.Application.Features.Commands.UserCommands.CreateUser
 {
     public class CreateUserCommandHandler : IRequestHandler<CreateUserCommandRequest, CreateUserCommandResponse>
     {
-        private readonly IUserService _userService;
+        private readonly IServiceManager _serviceManager;
         private readonly IMapper _mapper;
 
-        public CreateUserCommandHandler(IUserService userService, IMapper mapper)
+        public CreateUserCommandHandler(IMapper mapper, IServiceManager serviceManager)
         {
-            _userService = userService;
             _mapper = mapper;
+            _serviceManager = serviceManager;
         }
 
         public async Task<CreateUserCommandResponse> Handle(CreateUserCommandRequest request, CancellationToken cancellationToken)
         {
-          CreateUserResponseDto response= await _userService.CreateUserAsync(_mapper.Map<CreateUserDto>(request)) ;
+          CreateUserResponseDto response= await _serviceManager.UserService.CreateUserAsync(_mapper.Map<CreateUserDto>(request)) ;
 
             return new() { Message = response.Message, Succeeded = response.Succeeded };
         }

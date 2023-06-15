@@ -1,4 +1,5 @@
 ﻿using ECommerceAPI.Application.Abstractions.Services;
+using ECommerceAPI.Application.UnitOfWorks;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -10,17 +11,17 @@ namespace ECommerceAPI.Application.Features.Queries.AuthorizationEndpointQueries
 {
     public class GetRolesToEndpointQueryHandler : IRequestHandler<GetRolesToEndpointQueryRequest, GetRolesToEndpointQueryResponse>
     {
-        readonly IAuthorizationEndpointService _authorizationEndpointService;
+        readonly IServiceManager _serviceManager;
 
-        public GetRolesToEndpointQueryHandler(IAuthorizationEndpointService authorizationEndpointService)
+        public GetRolesToEndpointQueryHandler(IServiceManager serviceManager)
         {
-            _authorizationEndpointService = authorizationEndpointService;
+            _serviceManager = serviceManager;
         }
 
         public async Task<GetRolesToEndpointQueryResponse> Handle(GetRolesToEndpointQueryRequest request, CancellationToken cancellationToken)
             => new()
             {
-                Roles = await _authorizationEndpointService.GetRolesToEndpointAsync(request.Code, request.Controller)
+                Roles = await _serviceManager.AuthorizationEndpointService.GetRolesToEndpointAsync(request.Code, request.Controller)
             };
     }
 }

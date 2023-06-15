@@ -49,7 +49,8 @@ namespace ECommerceAPI.Persistence
             service.AddScoped<IProductService, ProductService>();
 
 
-            service.AddScoped<IUnitOfWork, UnitOfWork>();
+            service.AddScoped<IRepositoryManager, RepositoryManager>();
+            service.AddScoped<IServiceManager, ServiceManager>();
 
         }
     }

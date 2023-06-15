@@ -16,42 +16,42 @@ namespace ECommerceAPI.Persistence.Services
 {
     public class ProductService : IProductService
     {
-        readonly IUnitOfWork _unitOfWork;
-        readonly IQRCodeService _qRCodeService;
+        readonly IRepositoryManager _repositoryManager;
+        readonly IServiceManager _serviceManager;
         readonly IMapper _mapper;
-        public ProductService(IUnitOfWork unitOfWork, IQRCodeService qRCodeService, IMapper mapper)
+        public ProductService(IRepositoryManager repositoryManager,IMapper mapper, IServiceManager serviceManager)
         {
-            _unitOfWork = unitOfWork;
-            _qRCodeService = qRCodeService;
+            _repositoryManager = repositoryManager;
             _mapper = mapper;
+            _serviceManager = serviceManager;
         }
 
         public async Task<bool> CreateProductAsync(CreateProductDto product)
         {
-          bool result = await _unitOfWork.ProductWriteRepository.AddAsync(_mapper.Map<Product>(product));
+          bool result = await _repositoryManager.ProductWriteRepository.AddAsync(_mapper.Map<Product>(product));
             if (result)
-                await   _unitOfWork.SaveAsync();
+                await   _repositoryManager.SaveAsync();
             return result;
         }
 
         public async Task<(List<GetProductDto> products, int count)> GetAllProductsAsync(int page, int size)
         {
-            IQueryable<Product> products =  _unitOfWork.ProductReadRepository.GetAllProductsAllProperties(false);
+            IQueryable<Product> products =  _repositoryManager.ProductReadRepository.GetAllProductsAllProperties(false);
             return (_mapper.Map<List<GetProductDto>>(await products.Skip(page * size).Take(size).ToListAsync()), products.Count());
         }
         public async Task<GetProductDto> GetroductByIdAsync(string id)
-        => _mapper.Map<GetProductDto>(await _unitOfWork.ProductReadRepository.GetByIdProductAllPropertiesAsync(id));
+        => _mapper.Map<GetProductDto>(await _repositoryManager.ProductReadRepository.GetByIdProductAllPropertiesAsync(id));
             
 
         public async Task ProductAddToCategoryAsync(string productId, string categoryId)
         {
-            await _unitOfWork.ProductWriteRepository.AddCategoryByProductId(productId,categoryId);
-            await _unitOfWork.SaveAsync();
+            await _repositoryManager.ProductWriteRepository.AddCategoryByProductId(productId,categoryId);
+            await _repositoryManager.SaveAsync();
         }
 
         public async Task<byte[]> QrCodeToProductAsync(string productId)
         {
-            Product product = await _unitOfWork.ProductReadRepository.GetByIdAsync(productId);
+            Product product = await _repositoryManager.ProductReadRepository.GetByIdAsync(productId);
             if (product == null)
                 throw new Exception("Product not found");
 
@@ -65,32 +65,32 @@ namespace ECommerceAPI.Persistence.Services
             };
             string plainText = JsonSerializer.Serialize(plainObject);
 
-            return _qRCodeService.GenerateQRCode(plainText);
+            return _serviceManager.QRCodeService.GenerateQRCode(plainText);
         }
 
         public async Task<bool> RemoveProductByIdAsync(string id)
         {
-           bool result = await _unitOfWork.ProductWriteRepository.RemoveByIdAsync(id);
+           bool result = await _repositoryManager.ProductWriteRepository.RemoveByIdAsync(id);
             if (result)
-                await _unitOfWork.SaveAsync();
+                await _repositoryManager.SaveAsync();
             return result;
         }
 
         public async Task StockUpdateToProductAsync(string productId, int stock)
         {
-            Product product = await _unitOfWork.ProductReadRepository.GetByIdAsync(productId);
+            Product product = await _repositoryManager.ProductReadRepository.GetByIdAsync(productId);
             if (product == null)
                 throw new Exception("Product not found");
 
             product.Quantity = stock;
-            await _unitOfWork.SaveAsync();
+            await _repositoryManager.SaveAsync();
         }
 
         public async Task<bool> UpdateProductAsync(UpdateProductDto product)
         {
-             bool result = _unitOfWork.ProductWriteRepository.Update(_mapper.Map<Product>(product));
+             bool result = _repositoryManager.ProductWriteRepository.Update(_mapper.Map<Product>(product));
             if (result)
-                await _unitOfWork.SaveAsync();
+                await _repositoryManager.SaveAsync();
             return result;
         }
     }

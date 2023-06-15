@@ -16,16 +16,16 @@ namespace ECommerceAPI.Application.Features.Commands.ProductCommands.UpdateProdu
     internal class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommandRequest, UpdateProductCommandResponse>
     {
         private readonly IMapper _mapper;
-        readonly IProductService _productService;
-        public UpdateProductCommandHandler(IMapper mapper, IProductService productService)
+        readonly IServiceManager _serviceManager;
+        public UpdateProductCommandHandler(IMapper mapper, IServiceManager serviceManager)
         {
             _mapper = mapper;
-            _productService = productService;
+            _serviceManager = serviceManager;
         }
 
         public async Task<UpdateProductCommandResponse> Handle(UpdateProductCommandRequest request, CancellationToken cancellationToken)
         {
-            await _productService.UpdateProductAsync(_mapper.Map<UpdateProductDto>(request));
+            await _serviceManager.ProductService.UpdateProductAsync(_mapper.Map<UpdateProductDto>(request));
             return new();
         }
     }

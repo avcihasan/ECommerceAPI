@@ -1,4 +1,5 @@
 ﻿using ECommerceAPI.Application.Abstractions.Services;
+using ECommerceAPI.Application.UnitOfWorks;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -10,16 +11,16 @@ namespace ECommerceAPI.Application.Features.Commands.AuthorizationEndpointComman
 {
     public class AssignRoleEndpointCommandHandler : IRequestHandler<AssignRoleEndpointCommandRequest, AssignRoleEndpointCommandResponse>
     {
-        readonly IAuthorizationEndpointService _authorizationEndpointService;
-
-        public AssignRoleEndpointCommandHandler(IAuthorizationEndpointService authorizationEndpointService)
+        readonly IServiceManager _serviceManager;
+        public AssignRoleEndpointCommandHandler(IServiceManager serviceManager)
         {
-            _authorizationEndpointService = authorizationEndpointService;
+
+            _serviceManager = serviceManager;
         }
 
         public async Task<AssignRoleEndpointCommandResponse> Handle(AssignRoleEndpointCommandRequest request, CancellationToken cancellationToken)
         {
-          await  _authorizationEndpointService.AssignRoleEndpointAsync(request.Roles,request.Controller, request.Code,request.Type);
+          await  _serviceManager.AuthorizationEndpointService.AssignRoleEndpointAsync(request.Roles,request.Controller, request.Code,request.Type);
             return new();
         }
     }

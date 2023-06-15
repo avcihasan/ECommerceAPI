@@ -15,18 +15,18 @@ namespace ECommerceAPI.Application.Features.Commands.ProdcutImageFileCommands.Up
 {
     public class UploadProductImageCommandHandler : IRequestHandler<UploadProductImageCommandRequest, UploadProductImageCommandResponse>
     {
-        private readonly IStorageService _storageService;
-        private readonly IUnitOfWork _unitOfWork;
+        readonly IServiceManager _serviceManager;
+        private readonly IRepositoryManager _unitOfWork;
 
-        public UploadProductImageCommandHandler(IStorageService storageService, IUnitOfWork unitOfWork)
+        public UploadProductImageCommandHandler(IRepositoryManager unitOfWork, IServiceManager serviceManager)
         {
-            _storageService = storageService;
             _unitOfWork = unitOfWork;
+            _serviceManager = serviceManager;
         }
 
         public async Task<UploadProductImageCommandResponse> Handle(UploadProductImageCommandRequest request, CancellationToken cancellationToken)
         {
-            var datas = await _storageService.UploadAsync("resource/ProductImages", request.Files);
+            var datas = await _serviceManager.StorageService.UploadAsync("resource/ProductImages", request.Files);
 
             Product product = await _unitOfWork.ProductReadRepository.GetByIdAsync(request.Id);
 
@@ -34,7 +34,7 @@ namespace ECommerceAPI.Application.Features.Commands.ProdcutImageFileCommands.Up
             {
                 FileName = d.fileName,
                 Path = d.pathOrContainerName,
-                Storage = _storageService.StorageName,
+                Storage = _serviceManager.StorageService.StorageName,
                 Products = new List<Product>() { product }
 
             }).ToList());

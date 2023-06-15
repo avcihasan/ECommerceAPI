@@ -25,7 +25,7 @@ using ECommerceAPI.Persistence.Repositories.ProductRepositories;
 
 namespace ECommerceAPI.Persistence.UnitOfWorks
 {
-    public class UnitOfWork : IUnitOfWork
+    public class RepositoryManager : IRepositoryManager
     {
         private readonly ECommerceAPIDbContext _context;
         public ICategoryReadRepository CategoryReadRepository { get; private set; }
@@ -50,7 +50,7 @@ namespace ECommerceAPI.Persistence.UnitOfWorks
         public IControllerWriteRepository ControllerWriteRepository { get; private set; }
         public IEndpointReadRepository EndpointReadRepository { get; private set; }
         public IEndpointWriteRepository EndpointWriteRepository { get; private set; }
-        public UnitOfWork(ECommerceAPIDbContext context)
+        public RepositoryManager(ECommerceAPIDbContext context)
         {
             _context = context;
             CategoryReadRepository = new CategoryReadRepository(_context);

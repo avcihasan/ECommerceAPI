@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ECommerceAPI.Application.Abstractions.Services;
 using ECommerceAPI.Application.DTOs.BasketItemDTOs;
+using ECommerceAPI.Application.UnitOfWorks;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -12,17 +13,17 @@ namespace ECommerceAPI.Application.Features.Commands.BasketCommands.UpdateQuanti
 {
     public class UpdateQuantityCommandHandler : IRequestHandler<UpdateQuantityCommandRequest, UpdateQuantityCommandResponse>
     {
-        readonly IBasketService _basketService;
+        readonly IServiceManager _serviceManager;
         readonly IMapper _mapper;
-        public UpdateQuantityCommandHandler(IBasketService basketService, IMapper mapper)
+        public UpdateQuantityCommandHandler(IMapper mapper, IServiceManager serviceManager)
         {
-            _basketService = basketService;
             _mapper = mapper;
+            _serviceManager = serviceManager;
         }
 
         public async Task<UpdateQuantityCommandResponse> Handle(UpdateQuantityCommandRequest request, CancellationToken cancellationToken)
         {
-           await _basketService.UpdateQuantityAsync(_mapper.Map<UpdateBasketItemDto>(request));
+           await _serviceManager.BasketService.UpdateQuantityAsync(_mapper.Map<UpdateBasketItemDto>(request));
 
             return new();
         }

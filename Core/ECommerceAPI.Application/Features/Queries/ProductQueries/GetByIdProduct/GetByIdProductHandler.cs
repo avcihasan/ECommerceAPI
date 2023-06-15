@@ -14,19 +14,17 @@ namespace ECommerceAPI.Application.Features.Queries.ProductQueries.GetByIdProduc
 {
     public class GetByIdProductHandler : IRequestHandler<GetByIdProductQueryRequest, GetByIdProductQueryResponse>
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        readonly IProductService _productService;
-        public GetByIdProductHandler(IMapper mapper, IUnitOfWork unitOfWork, IProductService productService)
+        readonly IServiceManager _serviceManager;
+        public GetByIdProductHandler(IMapper mapper, IServiceManager serviceManager)
         {
             _mapper = mapper;
-            _unitOfWork = unitOfWork;
-            _productService = productService;
+            _serviceManager = serviceManager;
         }
 
         public async Task<GetByIdProductQueryResponse> Handle(GetByIdProductQueryRequest request, CancellationToken cancellationToken)
         {
-            return _mapper.Map<GetByIdProductQueryResponse>(await _productService.GetroductByIdAsync(request.Id));
+            return _mapper.Map<GetByIdProductQueryResponse>(await _serviceManager.ProductService.GetroductByIdAsync(request.Id));
         }
     }
 }

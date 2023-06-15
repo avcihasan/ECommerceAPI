@@ -1,4 +1,5 @@
 ﻿using ECommerceAPI.Application.Abstractions.Services;
+using ECommerceAPI.Application.UnitOfWorks;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -10,16 +11,16 @@ namespace ECommerceAPI.Application.Features.Commands.ProductCommands.UpdateStock
 {
     public class UpdateStockQrCodeToProductCommandHandler:IRequestHandler<UpdateStockQrCodeToProductCommandRequest, UpdateStockQrCodeToProductCommandResponse>
     {
-        readonly IProductService _productService;
+        readonly IServiceManager _serviceManager;
 
-        public UpdateStockQrCodeToProductCommandHandler(IProductService productService)
+        public UpdateStockQrCodeToProductCommandHandler(IServiceManager serviceManager)
         {
-            _productService = productService;
+            _serviceManager = serviceManager;
         }
 
         public async Task<UpdateStockQrCodeToProductCommandResponse> Handle(UpdateStockQrCodeToProductCommandRequest request, CancellationToken cancellationToken)
         {
-            await _productService.StockUpdateToProductAsync(request.ProductId, request.Stock);
+            await _serviceManager.ProductService.StockUpdateToProductAsync(request.ProductId, request.Stock);
             return new();
         }
     }

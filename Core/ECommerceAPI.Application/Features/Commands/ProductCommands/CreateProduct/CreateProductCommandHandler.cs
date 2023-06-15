@@ -17,19 +17,17 @@ namespace ECommerceAPI.Application.Features.Commands.ProductCommands.CreateProdu
     internal class CreateProductCommandHandler : IRequestHandler<CreateProductCommandRequest, CreateProductCommandResponse>
     {
         private readonly IMapper _mapper;
-        readonly IProductHubServcie _hubService;
-        readonly IProductService _productService;
-        public CreateProductCommandHandler(IMapper mapper, IProductHubServcie hubService, IProductService productService)
+        readonly IServiceManager _serviceManager;
+        public CreateProductCommandHandler(IMapper mapper, IServiceManager serviceManager)
         {
             _mapper = mapper;
-            _hubService = hubService;
-            _productService = productService;
+            _serviceManager = serviceManager;
         }
 
         public async Task<CreateProductCommandResponse> Handle(CreateProductCommandRequest request, CancellationToken cancellationToken)
         {
-            await _productService.CreateProductAsync(_mapper.Map<CreateProductDto>(request));
-            await _hubService.ProductAddedMessageAsync($"{request.Name} isimli ürün eklendi fiyatı {request.Price}.");
+            await _serviceManager.ProductService.CreateProductAsync(_mapper.Map<CreateProductDto>(request));
+            await _serviceManager.ProductHubService.ProductAddedMessageAsync($"{request.Name} isimli ürün eklendi fiyatı {request.Price}.");
             return new();
         }
     }

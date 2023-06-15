@@ -1,4 +1,5 @@
-﻿using ECommerceAPI.Application.Abstractions.Services;
+﻿using AutoMapper;
+using ECommerceAPI.Application.Abstractions.Services;
 using ECommerceAPI.Application.DTOs.ProductDTOs;
 using ECommerceAPI.Application.Repositories.ProductRepositories;
 using ECommerceAPI.Application.UnitOfWorks;
@@ -10,16 +11,16 @@ namespace ECommerceAPI.Application.Features.Queries.ProductImageFileQueries.GetP
 {
     public class GetProductImagesQueryHandler : IRequestHandler<GetProductImagesQueryRequest, List<GetProductImagesQueryResponse>>
     {
-        readonly IProductService _productService;
+        readonly IServiceManager _serviceManager;
 
-        public GetProductImagesQueryHandler(IProductService productService)
+        public GetProductImagesQueryHandler(IServiceManager serviceManager)
         {
-            _productService = productService;
+            _serviceManager = serviceManager;
         }
 
         public async Task<List<GetProductImagesQueryResponse>> Handle(GetProductImagesQueryRequest request, CancellationToken cancellationToken)
         {
-            GetProductDto product = await _productService.GetroductByIdAsync(request.Id);
+            GetProductDto product = await _serviceManager.ProductService.GetroductByIdAsync(request.Id);
 
             return product.ProductImageFiles.Select(x => new GetProductImagesQueryResponse
             {

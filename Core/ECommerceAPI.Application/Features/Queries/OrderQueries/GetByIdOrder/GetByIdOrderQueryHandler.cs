@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ECommerceAPI.Application.Abstractions.Services;
+using ECommerceAPI.Application.UnitOfWorks;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -11,16 +12,16 @@ namespace ECommerceAPI.Application.Features.Queries.OrderQueries.GetByIdOrder
 {
     public class GetByIdOrderQueryHandler : IRequestHandler<GetByIdOrderQueryRequest, GetByIdOrderQueryResponse>
     {
-        readonly IOrderService _orderService;
         readonly IMapper _mapper;
+        readonly IServiceManager _serviceManager;
 
-        public GetByIdOrderQueryHandler(IOrderService orderService, IMapper mapper)
+        public GetByIdOrderQueryHandler(IMapper mapper, IServiceManager serviceManager)
         {
-            _orderService = orderService;
             _mapper = mapper;
+            _serviceManager = serviceManager;
         }
 
         public async Task<GetByIdOrderQueryResponse> Handle(GetByIdOrderQueryRequest request, CancellationToken cancellationToken)
-            => _mapper.Map<GetByIdOrderQueryResponse>(await _orderService.GetOrderByIdAsync(request.Id));
+            => _mapper.Map<GetByIdOrderQueryResponse>(await _serviceManager.OrderService.GetOrderByIdAsync(request.Id));
     }
 }

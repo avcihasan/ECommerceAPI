@@ -1,4 +1,5 @@
 ﻿using ECommerceAPI.Application.Abstractions.Services;
+using ECommerceAPI.Application.UnitOfWorks;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -10,16 +11,16 @@ namespace ECommerceAPI.Application.Features.Commands.BasketCommands.RemoveBasket
 {
     internal class RemoveBasketItemCommandHandler : IRequestHandler<RemoveBasketItemCommandRequest, RemoveBasketItemCommandResponse>
     {
-        readonly IBasketService _basketService;
+        readonly IServiceManager _serviceManager;
 
-        public RemoveBasketItemCommandHandler(IBasketService basketService)
+        public RemoveBasketItemCommandHandler(IServiceManager serviceManager)
         {
-            _basketService = basketService;
+            _serviceManager = serviceManager;
         }
 
         public async Task<RemoveBasketItemCommandResponse> Handle(RemoveBasketItemCommandRequest request, CancellationToken cancellationToken)
         {
-            await _basketService.RemoveBasketItemAsync(request.BasketItemId);
+            await _serviceManager.BasketService.RemoveBasketItemAsync(request.BasketItemId);
             return new();
         }
     }

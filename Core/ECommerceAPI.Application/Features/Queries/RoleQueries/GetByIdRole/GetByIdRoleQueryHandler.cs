@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ECommerceAPI.Application.Abstractions.Services;
+using ECommerceAPI.Application.UnitOfWorks;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -11,15 +12,15 @@ namespace ECommerceAPI.Application.Features.Queries.RoleQueries.GetByIdRole
 {
     public class GetByIdRoleQueryHandler : IRequestHandler<GetByIdRoleQueryRequest, GetByIdRoleQueryResponse>
     {
-        readonly IRoleService _roleService;
+        readonly IServiceManager _serviceManager;
         readonly IMapper _mapper;
-        public GetByIdRoleQueryHandler(IRoleService roleService, IMapper mapper)
+        public GetByIdRoleQueryHandler(IMapper mapper, IServiceManager serviceManager)
         {
-            _roleService = roleService;
             _mapper = mapper;
+            _serviceManager = serviceManager;
         }
 
         public async Task<GetByIdRoleQueryResponse> Handle(GetByIdRoleQueryRequest request, CancellationToken cancellationToken)
-            => _mapper.Map<GetByIdRoleQueryResponse>(await _roleService.GetRoleByIdAsync(request.Id));
+            => _mapper.Map<GetByIdRoleQueryResponse>(await _serviceManager.RoleService.GetRoleByIdAsync(request.Id));
     }
 }

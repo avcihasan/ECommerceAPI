@@ -13,15 +13,15 @@ namespace ECommerceAPI.Application.Features.Commands.CategoryCommands.RemoveById
 {
     public class RemoveByIdCategoryCommandHandler : IRequestHandler<RemoveByIdCategoryCommandRequest, RemoveByIdCategoryCommandResponse>
     {
-        readonly ICategoryService _categoryService;
-        public RemoveByIdCategoryCommandHandler(ICategoryService categoryService)
+        readonly IServiceManager _serviceManager;
+        public RemoveByIdCategoryCommandHandler(IServiceManager serviceManager)
         {
-            _categoryService = categoryService;
+            _serviceManager = serviceManager;
         }
 
         public async Task<RemoveByIdCategoryCommandResponse> Handle(RemoveByIdCategoryCommandRequest request, CancellationToken cancellationToken)
         {
-             await  _categoryService.RemoveCategoryByIdAsync(request.Id);
+             await _serviceManager.CategoryService.RemoveCategoryByIdAsync(request.Id);
             return new();
         }
     }

@@ -15,16 +15,17 @@ namespace ECommerceAPI.Application.Features.Queries.CategoryQueries.GetAllCatego
     public class GetAllCategoriesQueryHandler : IRequestHandler<GetAllCategoriesQueryRequest, List<GetAllCategoriesQueryResponse>>
     {
         private readonly IMapper _mapper;
-        readonly ICategoryService _categoryService;
-        public GetAllCategoriesQueryHandler(IMapper mapper,  ICategoryService categoryService)
+        readonly IServiceManager _serviceManager;
+
+        public GetAllCategoriesQueryHandler(IMapper mapper, IServiceManager serviceManager)
         {
             _mapper = mapper;
-            _categoryService = categoryService;
+            _serviceManager = serviceManager;
         }
 
         public async Task<List<GetAllCategoriesQueryResponse>> Handle(GetAllCategoriesQueryRequest request, CancellationToken cancellationToken)
         {
-            return  _mapper.Map<List<GetAllCategoriesQueryResponse>>(await _categoryService.GetAllCategoriesAsync());
+            return  _mapper.Map<List<GetAllCategoriesQueryResponse>>(await _serviceManager.CategoryService.GetAllCategoriesAsync());
         }
     }
 }

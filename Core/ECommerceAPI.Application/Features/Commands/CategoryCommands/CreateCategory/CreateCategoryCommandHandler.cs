@@ -16,17 +16,17 @@ namespace ECommerceAPI.Application.Features.Commands.CategoryCommands.CreateCate
     public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommandRequest, CreateCategoryCommandResponse>
     {
         private readonly IMapper _mapper;
-        readonly ICategoryService _categoryService;
+        readonly IServiceManager _serviceManager;
 
-        public CreateCategoryCommandHandler( IMapper mapper, ICategoryService categoryService)
+        public CreateCategoryCommandHandler(IMapper mapper, IServiceManager serviceManager)
         {
             _mapper = mapper;
-            _categoryService = categoryService;
+            _serviceManager = serviceManager;
         }
 
         public async Task<CreateCategoryCommandResponse> Handle(CreateCategoryCommandRequest request, CancellationToken cancellationToken)
         {
-            await _categoryService.CreateCategoryAsync(_mapper.Map<CreateCategoryDto>(request));
+            await _serviceManager.CategoryService.CreateCategoryAsync(_mapper.Map<CreateCategoryDto>(request));
             return new();
         }
     }

@@ -14,6 +14,7 @@ using ECommerceAPI.Application.Features.Commands.ProductCommands.UpdateStockQrCo
 using ECommerceAPI.Application.Features.Queries.ProductImageFileQueries.GetProductImages;
 using ECommerceAPI.Application.Features.Queries.ProductQueries.GetAllProducts;
 using ECommerceAPI.Application.Features.Queries.ProductQueries.GetByIdProduct;
+using ECommerceAPI.Application.UnitOfWorks;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,11 +26,11 @@ namespace ECommerceAPI.API.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IMediator _mediator;
-        readonly IProductService _productService;
-        public ProductsController(IMediator mediator, IProductService productService)
+        readonly IServiceManager _serviceManager;
+        public ProductsController(IMediator mediator, IServiceManager serviceManager)
         {
             _mediator = mediator;
-            _productService = productService;
+            _serviceManager = serviceManager;
         }
 
         [HttpGet]
@@ -117,7 +118,7 @@ namespace ECommerceAPI.API.Controllers
 
         [HttpGet("[action]/{productId}")]
         public async Task<IActionResult> GetQrCodeToProduct([FromRoute] string productId)
-            => File(await _productService.QrCodeToProductAsync(productId), "image/png");
+            => File(await _serviceManager.ProductService.QrCodeToProductAsync(productId), "image/png");
 
         [HttpPut("[action]")]
         public async Task<IActionResult> UpdateStockQrCodeToProduct(UpdateStockQrCodeToProductCommandRequest request)

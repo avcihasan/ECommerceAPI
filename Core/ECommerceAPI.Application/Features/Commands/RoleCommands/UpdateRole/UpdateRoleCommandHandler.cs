@@ -1,4 +1,5 @@
 ﻿using ECommerceAPI.Application.Abstractions.Services;
+using ECommerceAPI.Application.UnitOfWorks;
 using ECommerceAPI.Domain.Entities.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -12,16 +13,17 @@ namespace ECommerceAPI.Application.Features.Commands.RoleCommands.UpdateRole
 {
     public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommandRequest, UpdateRoleCommandResponse>
     {
-        readonly IRoleService _roleService;
+        readonly IServiceManager _serviceManager;
 
-        public UpdateRoleCommandHandler(IRoleService roleService)
+        public UpdateRoleCommandHandler(IServiceManager serviceManager)
         {
-            _roleService = roleService;
+            _serviceManager = serviceManager;
         }
+
 
         public async Task<UpdateRoleCommandResponse> Handle(UpdateRoleCommandRequest request, CancellationToken cancellationToken)
         {
-           await _roleService.UpdateRoleAsync(request.Id,request.Name);
+           await _serviceManager.RoleService.UpdateRoleAsync(request.Id,request.Name);
             return new();
         }
     }

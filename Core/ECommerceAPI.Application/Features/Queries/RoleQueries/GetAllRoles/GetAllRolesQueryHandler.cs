@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ECommerceAPI.Application.Abstractions.Services;
 using ECommerceAPI.Application.DTOs.RoleDTOs;
+using ECommerceAPI.Application.UnitOfWorks;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -12,16 +13,15 @@ namespace ECommerceAPI.Application.Features.Queries.RoleQueries.GetAllRoles
 {
     public class GetAllRolesQueryHandler : IRequestHandler<GetAllRolesQueryRequest, GetAllRolesQueryResponse>
     {
-        readonly IRoleService _roleService;
-
-        public GetAllRolesQueryHandler(IRoleService roleService)
+        readonly IServiceManager _serviceManager;
+        public GetAllRolesQueryHandler(IServiceManager serviceManager)
         {
-            _roleService = roleService;
+            _serviceManager = serviceManager;
         }
 
         public async Task<GetAllRolesQueryResponse> Handle(GetAllRolesQueryRequest request, CancellationToken cancellationToken)
         {
-           (List<RoleDto> roles, int totalCount) = await _roleService.GetRolesAsync(request.Page,request.Size);
+           (List<RoleDto> roles, int totalCount) = await _serviceManager.RoleService.GetRolesAsync(request.Page,request.Size);
             return new()
             {
                 Datas = roles,

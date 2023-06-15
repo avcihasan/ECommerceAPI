@@ -17,16 +17,18 @@ namespace ECommerceAPI.Application.Features.Queries.ProductQueries.GetAllProduct
 {
     public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQueryRequest, GetAllProductsQueryResponse>
     {
-        readonly IProductService _productService;
-        public GetAllProductsQueryHandler(IProductService productService)
+        readonly IServiceManager _serviceManager;
+
+        public GetAllProductsQueryHandler(IServiceManager serviceManager)
         {
-            _productService = productService;
+            _serviceManager = serviceManager;
         }
+
 
         public async Task<GetAllProductsQueryResponse> Handle(GetAllProductsQueryRequest request, CancellationToken cancellationToken)
         {
 
-            var datas = await _productService.GetAllProductsAsync(request.Page, request.Size);
+            var datas = await _serviceManager.ProductService.GetAllProductsAsync(request.Page, request.Size);
 
             return new() { Products = datas.products, TotalCount = datas.count };
 

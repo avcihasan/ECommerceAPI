@@ -16,31 +16,31 @@ namespace ECommerceAPI.Persistence.Services
     public class AuthorizationEndpointService : IAuthorizationEndpointService
     {
 
-        readonly IUnitOfWork _unitOfWork;
-        readonly IConfigurationService _configurationService;
+        readonly IRepositoryManager _repositoryManager;
+        readonly IServiceManager _serviceManager;
         readonly RoleManager<AppRole> _roleManager;
 
-        public AuthorizationEndpointService(IUnitOfWork unitOfWork, IConfigurationService configurationService, RoleManager<AppRole> roleManager)
+        public AuthorizationEndpointService(IRepositoryManager repositoryManager, RoleManager<AppRole> roleManager, IServiceManager serviceManager)
         {
-            _unitOfWork = unitOfWork;
-            _configurationService = configurationService;
+            _repositoryManager = repositoryManager;
             _roleManager = roleManager;
+            _serviceManager = serviceManager;
         }
 
         public async Task AssignRoleEndpointAsync(string[] roles, string controllerName, string code, Type type)
         {
-            Controller controller = await _unitOfWork.ControllerReadRepository.GetAsync(x => x.Name == controllerName);
+            Controller controller = await _repositoryManager.ControllerReadRepository.GetAsync(x => x.Name == controllerName);
             if (controller is null)
             {
                 controller = new () {Name = controllerName };
-                await _unitOfWork.ControllerWriteRepository.AddAsync(controller);
-                await _unitOfWork.SaveAsync();
+                await _repositoryManager.ControllerWriteRepository.AddAsync(controller);
+                await _repositoryManager.SaveAsync();
             }
-            Endpoint endpoint = await _unitOfWork.EndpointReadRepository.Table.Include(x => x.Roles).Include(x => x.Controller).FirstOrDefaultAsync(x => x.Code == code && x.Controller == controller);
+            Endpoint endpoint = await _repositoryManager.EndpointReadRepository.Table.Include(x => x.Roles).Include(x => x.Controller).FirstOrDefaultAsync(x => x.Code == code && x.Controller == controller);
 
             if (endpoint == null)
             {
-                EndPointDto _endpoint = _configurationService.GetAuthorizeDefinitionEndpoints(type)
+                EndPointDto _endpoint = _serviceManager.ConfigurationService.GetAuthorizeDefinitionEndpoints(type)
                         .FirstOrDefault(m => m.Name == controllerName)
                         .EndPoints.FirstOrDefault(e => e.Code == code);
 
@@ -54,8 +54,8 @@ namespace ECommerceAPI.Persistence.Services
                     Controller = controller
                 };
 
-                await _unitOfWork.EndpointWriteRepository.AddAsync(endpoint);
-                await _unitOfWork.SaveAsync();
+                await _repositoryManager.EndpointWriteRepository.AddAsync(endpoint);
+                await _repositoryManager.SaveAsync();
             }
 
             foreach (var role in endpoint.Roles)
@@ -66,12 +66,12 @@ namespace ECommerceAPI.Persistence.Services
             foreach (var role in appRoles)
                 endpoint.Roles.Add(role);
 
-            await _unitOfWork.SaveAsync();
+            await _repositoryManager.SaveAsync();
         }
 
         public async Task<List<string>> GetRolesToEndpointAsync(string code, string controller)
         {
-            Endpoint endpoint = await _unitOfWork.EndpointReadRepository.Table.Include(x => x.Roles).Include(x => x.Controller).FirstOrDefaultAsync(x => x.Code == code && x.Controller.Name == controller);
+            Endpoint endpoint = await _repositoryManager.EndpointReadRepository.Table.Include(x => x.Roles).Include(x => x.Controller).FirstOrDefaultAsync(x => x.Code == code && x.Controller.Name == controller);
             if (endpoint != null)
                 return endpoint.Roles.Select(r => r.Name).ToList();
             return null;

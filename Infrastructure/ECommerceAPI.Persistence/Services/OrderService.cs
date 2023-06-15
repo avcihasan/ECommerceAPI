@@ -10,33 +10,33 @@ namespace ECommerceAPI.Persistence.Services
 {
     public class OrderService : IOrderService
     {
-        readonly IUnitOfWork _unitOfWork;
-        readonly IBasketService _basketService;
+        readonly IRepositoryManager _repositoryManager;
+        readonly IServiceManager _serviceManager;
 
-        public OrderService(IUnitOfWork unitOfWork, IBasketService basketService)
+        public OrderService(IRepositoryManager repositoryManager, IServiceManager serviceManager)
         {
-            _unitOfWork = unitOfWork;
-            _basketService = basketService;
+            _repositoryManager = repositoryManager;
+            _serviceManager = serviceManager;
         }
 
 
 
         public async Task CreateOrderAsync(CreateOrderDto order)
         {
-            await _unitOfWork.OrderWriteRepository.AddAsync(new()
+            await _repositoryManager.OrderWriteRepository.AddAsync(new()
             {
                 Address = order.Address,
                 Description = order.Description,
                 Id = Guid.Parse(order.BasketId),
-                TotalPrice = await _basketService.GetBasketTotalPrice(order.BasketId),
+                TotalPrice = await _serviceManager.BasketService.GetBasketTotalPrice(order.BasketId),
                 OrderCode = GenerateOrderCode()
             }); ; ;
-            await _unitOfWork.SaveAsync();
+            await _repositoryManager.SaveAsync();
         }
 
         public async Task<GetAllOrdersDto> GetAllOrdersAsync(int page, int size)
         {
-            var query = _unitOfWork.OrderReadRepository.Table
+            var query = _repositoryManager.OrderReadRepository.Table
                  .Include(x => x.Basket)
                      .ThenInclude(x => x.User)
                  .Include(x => x.Basket)
@@ -47,7 +47,7 @@ namespace ECommerceAPI.Persistence.Services
 
 
             var data2 = from order in data
-                        join completedOrder in _unitOfWork.CompletedOrderReadRepository.Table
+                        join completedOrder in _repositoryManager.CompletedOrderReadRepository.Table
                            on order.Id equals completedOrder.Id into co
                         from _co in co.DefaultIfEmpty()
                         select new
@@ -78,13 +78,13 @@ namespace ECommerceAPI.Persistence.Services
 
         public async Task<GetSingleOrderDto> GetOrderByIdAsync(string id)
         {
-            IQueryable<Order> data = _unitOfWork.OrderReadRepository.Table
+            IQueryable<Order> data = _repositoryManager.OrderReadRepository.Table
                   .Include(x => x.Basket)
                       .ThenInclude(x => x.BasketItems)
                           .ThenInclude(x => x.Product);
 
             return await (from order in data
-                          join completedOrder in _unitOfWork.CompletedOrderReadRepository.Table
+                          join completedOrder in _repositoryManager.CompletedOrderReadRepository.Table
                                on order.Id equals completedOrder.Id into co
                           from _co in co.DefaultIfEmpty()
                           select new GetSingleOrderDto()
@@ -109,7 +109,7 @@ namespace ECommerceAPI.Persistence.Services
         public async Task<CompletedOrderDto> CompleteOrderAsync(string id)
         {
             CompletedOrderDto dto = new();
-            Order order = await _unitOfWork.OrderReadRepository.Table.Include(x=>x.Basket).ThenInclude(x=>x.User).FirstOrDefaultAsync(x=>x.Id == Guid.Parse(id));
+            Order order = await _repositoryManager.OrderReadRepository.Table.Include(x=>x.Basket).ThenInclude(x=>x.User).FirstOrDefaultAsync(x=>x.Id == Guid.Parse(id));
             if (order is not null)
             {
                 dto.OrderCode = order.OrderCode;
@@ -118,10 +118,10 @@ namespace ECommerceAPI.Persistence.Services
                 dto.UserSurname = order.Basket.User.Surname;
                 dto.Email = order.Basket.User.Email;
 
-                bool result = await _unitOfWork.CompletedOrderWriteRepository.AddAsync(new() { Id = Guid.Parse(id) });
+                bool result = await _repositoryManager.CompletedOrderWriteRepository.AddAsync(new() { Id = Guid.Parse(id) });
                 if (result)
                 {
-                    await _unitOfWork.SaveAsync();
+                    await _repositoryManager.SaveAsync();
                     dto.IsCompleted = true;
                     return dto;
                 }

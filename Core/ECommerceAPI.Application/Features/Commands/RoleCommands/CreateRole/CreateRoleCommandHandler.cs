@@ -1,4 +1,5 @@
 ﻿using ECommerceAPI.Application.Abstractions.Services;
+using ECommerceAPI.Application.UnitOfWorks;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -10,16 +11,16 @@ namespace ECommerceAPI.Application.Features.Commands.RoleCommands.CreateRole
 {
     public class CreateRoleCommandHandler : IRequestHandler<CreateRoleCommandRequest, CreateRoleCommandResponse>
     {
-        readonly IRoleService _roleService;
+        readonly IServiceManager _serviceManager;
 
-        public CreateRoleCommandHandler(IRoleService roleService)
+        public CreateRoleCommandHandler(IServiceManager serviceManager)
         {
-            _roleService = roleService;
+            _serviceManager = serviceManager;
         }
 
         public async Task<CreateRoleCommandResponse> Handle(CreateRoleCommandRequest request, CancellationToken cancellationToken)
         {
-            await _roleService.CreateRoleAsync(request.Name);
+            await _serviceManager.RoleService.CreateRoleAsync(request.Name);
             return new();
         }
     }

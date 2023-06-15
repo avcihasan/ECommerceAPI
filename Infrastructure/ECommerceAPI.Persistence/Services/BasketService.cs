@@ -13,16 +13,16 @@ namespace ECommerceAPI.Persistence.Services
     {
 
         readonly IHttpContextAccessor _httpContextAccessor;
-        readonly IUnitOfWork _unitOfWork;
+        readonly IRepositoryManager _repositoryManager;
         readonly UserManager<AppUser> _userManager;
        
         public Basket GetUserActiveBasket => GetBasketAsync().Result;
 
-        public BasketService(IHttpContextAccessor httpContextAccessor, UserManager<AppUser> userManager, IUnitOfWork unitOfWork)
+        public BasketService(IHttpContextAccessor httpContextAccessor, UserManager<AppUser> userManager, IRepositoryManager repositoryManager)
         {
             _httpContextAccessor = httpContextAccessor;
             _userManager = userManager;
-            _unitOfWork = unitOfWork;
+            _repositoryManager = repositoryManager;
         }
 
         private async Task<Basket> GetBasketAsync()
@@ -46,7 +46,7 @@ namespace ECommerceAPI.Persistence.Services
                 targetBasket = new();
                 user.Baskets.Add(targetBasket);
             }
-            await _unitOfWork.SaveAsync();
+            await _repositoryManager.SaveAsync();
             return targetBasket;
         }
 
@@ -62,7 +62,7 @@ namespace ECommerceAPI.Persistence.Services
             Basket basket = await GetBasketAsync();
             NullCheckException(basket);
 
-            BasketItem _basketItem = await _unitOfWork.BasketItemReadRepository.GetAsync(x => x.BasketId == basket.Id && x.ProductId == Guid.Parse(basketItem.ProductId));
+            BasketItem _basketItem = await _repositoryManager.BasketItemReadRepository.GetAsync(x => x.BasketId == basket.Id && x.ProductId == Guid.Parse(basketItem.ProductId));
             if (_basketItem is not null)
                 _basketItem.Quantity++;
             else
@@ -71,7 +71,7 @@ namespace ECommerceAPI.Persistence.Services
                     ProductId = Guid.Parse(basketItem.ProductId), 
                     Quantity = basketItem.Quantity 
                 });
-            await _unitOfWork.SaveAsync();
+            await _repositoryManager.SaveAsync();
         }
 
         public async Task<List<BasketItem>> GetBasketItemsAsync()
@@ -82,19 +82,19 @@ namespace ECommerceAPI.Persistence.Services
 
         public async Task RemoveBasketItemAsync(string basketItemId)
         {
-            BasketItem basketItem = await _unitOfWork.BasketItemReadRepository.GetByIdAsync(basketItemId);
+            BasketItem basketItem = await _repositoryManager.BasketItemReadRepository.GetByIdAsync(basketItemId);
 
             NullCheckException(basketItem);
             //if (basketItem == null)
             //    throw new Exception("Beklenmeyen bir hata oluştu");
 
-            _unitOfWork.BasketItemWriteRepository.Remove(basketItem);
-            await _unitOfWork.SaveAsync();
+            _repositoryManager.BasketItemWriteRepository.Remove(basketItem);
+            await _repositoryManager.SaveAsync();
         }
 
         public async Task UpdateQuantityAsync(UpdateBasketItemDto basketItem)
         {
-            BasketItem _basketItem = await _unitOfWork.BasketItemReadRepository.GetByIdAsync(basketItem.BasketItemId);
+            BasketItem _basketItem = await _repositoryManager.BasketItemReadRepository.GetByIdAsync(basketItem.BasketItemId);
 
             NullCheckException(_basketItem);
 
@@ -102,14 +102,14 @@ namespace ECommerceAPI.Persistence.Services
             //    throw new Exception("Beklenmeyen bir hata oluştu");
 
             _basketItem.Quantity = basketItem.Quantity;
-            await _unitOfWork.SaveAsync();
+            await _repositoryManager.SaveAsync();
         }
 
         public async Task<decimal> GetBasketTotalPrice(string basketId)
         {
             decimal totalPrice = 0;
 
-            Basket basket= await _unitOfWork.BasketReadRepository.Table
+            Basket basket= await _repositoryManager.BasketReadRepository.Table
                 .Include(x => x.BasketItems)
                     .ThenInclude(x => x.Product)
                 .FirstOrDefaultAsync(x => x.Id == Guid.Parse(basketId));

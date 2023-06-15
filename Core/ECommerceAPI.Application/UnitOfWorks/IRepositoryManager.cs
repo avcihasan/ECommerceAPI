@@ -14,7 +14,7 @@ using ECommerceAPI.Domain.Entities;
 
 namespace ECommerceAPI.Application.UnitOfWorks
 {
-    public interface IUnitOfWork
+    public interface IRepositoryManager
     {
         ICategoryReadRepository CategoryReadRepository { get; }
         ICategoryWriteRepository CategoryWriteRepository { get; }

@@ -22,15 +22,15 @@ namespace ECommerceAPI.Persistence.Services
     {
         private readonly IMapper _mapper;
         private readonly UserManager<AppUser> _userManager;
-        readonly IUnitOfWork _unitOfWork;
+        readonly IRepositoryManager _repositoryManager;
 
         public int TotalUserCount => _userManager.Users.Count();
 
-        public UserService(IMapper mapper, UserManager<AppUser> userManager, IUnitOfWork unitOfWork)
+        public UserService(IMapper mapper, UserManager<AppUser> userManager, IRepositoryManager repositoryManager)
         {
             _mapper = mapper;
             _userManager = userManager;
-            _unitOfWork = unitOfWork;
+            _repositoryManager = repositoryManager;
         }
 
         public async Task<CreateUserResponseDto> CreateUserAsync(CreateUserDto createUser)
@@ -114,7 +114,7 @@ namespace ECommerceAPI.Persistence.Services
             if (!userRoles.Any())
                 return false;
 
-            Endpoint endpoint = await _unitOfWork.EndpointReadRepository.Table
+            Endpoint endpoint = await _repositoryManager.EndpointReadRepository.Table
                      .Include(e => e.Roles)
                      .FirstOrDefaultAsync(e => e.Code == code);
 

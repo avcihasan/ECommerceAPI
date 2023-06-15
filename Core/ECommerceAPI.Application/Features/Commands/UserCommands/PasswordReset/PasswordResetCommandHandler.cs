@@ -1,4 +1,5 @@
 ﻿using ECommerceAPI.Application.Abstractions.Services;
+using ECommerceAPI.Application.UnitOfWorks;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -10,16 +11,16 @@ namespace ECommerceAPI.Application.Features.Commands.UserCommands.PasswordReset
 {
     public class PasswordResetCommandHandler : IRequestHandler<PasswordResetCommandRequest, PasswordResetCommandResponse>
     {
-        readonly IAuthService _authService;
+        readonly IServiceManager _serviceManager;
 
-        public PasswordResetCommandHandler(IAuthService authService)
+        public PasswordResetCommandHandler(IServiceManager serviceManager)
         {
-            _authService = authService;
+            _serviceManager = serviceManager;
         }
 
         public async Task<PasswordResetCommandResponse> Handle(PasswordResetCommandRequest request, CancellationToken cancellationToken)
         {
-           await _authService.PasswordResetAsync(request.Email);
+           await _serviceManager.AuthService.PasswordResetAsync(request.Email);
             return new();
         }
     }

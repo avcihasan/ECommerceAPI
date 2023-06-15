@@ -11,9 +11,9 @@ namespace ECommerceAPI.Application.Features.Commands.ProdcutImageFileCommands.Ch
 {
     public class ChangeShowcaseProductImageHandler : IRequestHandler<ChangeShowcaseProductImageRequest, ChangeShowcaseProductImageResponse>
     {
-        readonly IUnitOfWork _unitOfWork;
+        readonly IRepositoryManager _unitOfWork;
 
-        public ChangeShowcaseProductImageHandler(IUnitOfWork unitOfWork)
+        public ChangeShowcaseProductImageHandler(IRepositoryManager unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }

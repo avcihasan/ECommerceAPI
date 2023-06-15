@@ -4,6 +4,7 @@ using ECommerceAPI.Application.Abstractions.Token;
 using ECommerceAPI.Application.DTOs.TokenDTOs;
 using ECommerceAPI.Application.DTOs.UserDTOs;
 using ECommerceAPI.Application.Features.Commands.UserCommands.LoginUser;
+using ECommerceAPI.Application.UnitOfWorks;
 using ECommerceAPI.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
@@ -21,17 +22,13 @@ namespace ECommerceAPI.Persistence.Services
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
-        private readonly ITokenHandler _tokenHandler;
-        private readonly IUserService _userService;
-        readonly IMailService _mailService;
+        readonly IServiceManager _serviceManager;
 
-        public AuthService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenHandler tokenHandler, IUserService userService, IMailService mailService)
+        public AuthService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IServiceManager serviceManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _tokenHandler = tokenHandler;
-            _userService = userService;
-            _mailService = mailService;
+            _serviceManager = serviceManager;
         }
 
 
@@ -48,8 +45,8 @@ namespace ECommerceAPI.Persistence.Services
 
             if (result.Succeeded)
             {
-                TokenDto token = _tokenHandler.CreateAccessToken(tokenLifeMinute, user);
-                await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 15);
+                TokenDto token = _serviceManager.TokenHandler.CreateAccessToken(tokenLifeMinute, user);
+                await _serviceManager.UserService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 15);
                 return token;
             }
 
@@ -64,8 +61,8 @@ namespace ECommerceAPI.Persistence.Services
             AppUser? user = await _userManager.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
             if (user != null && user?.RefreshTokenEndDate > DateTime.UtcNow)
             {
-                TokenDto token = _tokenHandler.CreateAccessToken(15, user);
-                await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 15);
+                TokenDto token = _serviceManager.TokenHandler.CreateAccessToken(15, user);
+                await _serviceManager.UserService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 15);
                 return token;
             }
             else
@@ -94,7 +91,7 @@ namespace ECommerceAPI.Persistence.Services
                 byte[] tokenBytes = Encoding.UTF8.GetBytes(resetToken);
                 resetToken = WebEncoders.Base64UrlEncode(tokenBytes);
 
-                await _mailService.SendResetPasswordMailAsync(user.Email, user.Id, resetToken);
+                await _serviceManager.MailService.SendResetPasswordMailAsync(user.Email, user.Id, resetToken);
             }
         }
     }

@@ -15,19 +15,17 @@ namespace ECommerceAPI.Application.Features.Commands.CategoryCommands.UpdateCate
 {
     public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryCommandRequest, UpdateCategoryCommandResponse>
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        readonly ICategoryService _categoryService;
-        public UpdateCategoryCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, ICategoryService categoryService)
+        readonly IServiceManager _serviceManager;
+        public UpdateCategoryCommandHandler(IMapper mapper, IServiceManager serviceManager)
         {
-            _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _categoryService = categoryService;
+            _serviceManager = serviceManager;
         }
 
         public async Task<UpdateCategoryCommandResponse> Handle(UpdateCategoryCommandRequest request, CancellationToken cancellationToken)
         {
-             await   _categoryService.UpdateCategoryAsync(_mapper.Map<UpdateCategoryDto>(request));
+             await _serviceManager.CategoryService.UpdateCategoryAsync(_mapper.Map<UpdateCategoryDto>(request));
             return new();
         }
     }

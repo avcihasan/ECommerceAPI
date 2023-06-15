@@ -1,4 +1,5 @@
 ﻿using ECommerceAPI.Application.Abstractions.Services;
+using ECommerceAPI.Application.UnitOfWorks;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -10,16 +11,16 @@ namespace ECommerceAPI.Application.Features.Commands.UserCommands.RefreshTokenLo
 {
     public class RefreshTokenLoginUserCommandHandler : IRequestHandler<RefreshTokenLoginUserCommandRequest, RefreshTokenLoginUserCommandResponse>
     {
-        private readonly IAuthService _authService;
+        readonly IServiceManager _serviceManager;
 
-        public RefreshTokenLoginUserCommandHandler(IAuthService authService)
+        public RefreshTokenLoginUserCommandHandler(IServiceManager serviceManager)
         {
-            _authService = authService;
+            _serviceManager = serviceManager;
         }
 
         public async Task<RefreshTokenLoginUserCommandResponse> Handle(RefreshTokenLoginUserCommandRequest request, CancellationToken cancellationToken)
         {
-            return new () { Token = await _authService.RefreshTokenLoginAsync(request.RefreshToken) };
+            return new () { Token = await _serviceManager.AuthService.RefreshTokenLoginAsync(request.RefreshToken) };
         }
     }
 }

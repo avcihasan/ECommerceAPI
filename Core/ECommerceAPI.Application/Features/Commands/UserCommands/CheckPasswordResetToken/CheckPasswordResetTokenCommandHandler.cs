@@ -1,4 +1,5 @@
 ﻿using ECommerceAPI.Application.Abstractions.Services;
+using ECommerceAPI.Application.UnitOfWorks;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -10,15 +11,15 @@ namespace ECommerceAPI.Application.Features.Commands.UserCommands.CheckPasswordR
 {
     public class CheckPasswordResetTokenCommandHandler : IRequestHandler<CheckPasswordResetTokenCommandRequest, CheckPasswordResetTokenCommandResponse>
     {
-        readonly IAuthService _authService;
+        readonly IServiceManager _serviceManager;
 
-        public CheckPasswordResetTokenCommandHandler(IAuthService authService)
+        public CheckPasswordResetTokenCommandHandler(IServiceManager serviceManager)
         {
-            _authService = authService;
+            _serviceManager = serviceManager;
         }
 
         public async Task<CheckPasswordResetTokenCommandResponse> Handle(CheckPasswordResetTokenCommandRequest request, CancellationToken cancellationToken)
-            =>new() { State=await _authService.CheckPasswordResetTokenAsync(request.ResetToken, request.UserId) };
+            =>new() { State=await _serviceManager.AuthService.CheckPasswordResetTokenAsync(request.ResetToken, request.UserId) };
         
     }
 }

@@ -1,4 +1,5 @@
 ﻿using ECommerceAPI.Application.Abstractions.Services;
+using ECommerceAPI.Application.UnitOfWorks;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -10,18 +11,17 @@ namespace ECommerceAPI.Application.Features.Queries.UserQueries.GetRolesToUser
 {
     public class GetRolesToUserQueryHandler : IRequestHandler<GetRolesToUserQueryRequest, GetRolesToUserQueryResponse>
     {
-        readonly IUserService _userService;
-
-        public GetRolesToUserQueryHandler(IUserService userService)
+        readonly IServiceManager _serviceManager;
+        public GetRolesToUserQueryHandler(IServiceManager serviceManager)
         {
-            _userService = userService;
+            _serviceManager = serviceManager;
         }
 
         public async Task<GetRolesToUserQueryResponse> Handle(GetRolesToUserQueryRequest request, CancellationToken cancellationToken)
         {
             return new()
             {
-                UserRoles = await _userService.GetRolesToUserAsync(request.UserId)
+                UserRoles = await _serviceManager.UserService.GetRolesToUserAsync(request.UserId)
             };
         }
     }

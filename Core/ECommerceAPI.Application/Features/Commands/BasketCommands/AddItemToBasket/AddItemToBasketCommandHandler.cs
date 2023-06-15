@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ECommerceAPI.Application.Abstractions.Services;
 using ECommerceAPI.Application.DTOs.BasketItemDTOs;
+using ECommerceAPI.Application.UnitOfWorks;
 using ECommerceAPI.Domain.Entities;
 using MediatR;
 using System;
@@ -13,18 +14,19 @@ namespace ECommerceAPI.Application.Features.Commands.BasketCommands.AddItemToBas
 {
     public class AddItemToBasketCommandHandler : IRequestHandler<AddItemToBasketCommandRequest, AddItemToBasketCommandResponse>
     {
-        readonly IBasketService _basketService;
+        readonly IServiceManager _serviceManager;
         readonly IMapper _mapper;
-        public AddItemToBasketCommandHandler(IBasketService basketService, IMapper mapper)
+        public AddItemToBasketCommandHandler(IMapper mapper, IServiceManager serviceManager)
         {
-            _basketService = basketService;
+
             _mapper = mapper;
+            _serviceManager = serviceManager;
         }
 
         public async Task<AddItemToBasketCommandResponse> Handle(AddItemToBasketCommandRequest request, CancellationToken cancellationToken)
         {
 
-           await _basketService.AddItemToBasketAsync(_mapper.Map<CreateBasketItemDto>(request));
+           await _serviceManager.BasketService.AddItemToBasketAsync(_mapper.Map<CreateBasketItemDto>(request));
 
 
             return new();

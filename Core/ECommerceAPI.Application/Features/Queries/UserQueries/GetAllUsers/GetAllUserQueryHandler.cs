@@ -1,4 +1,5 @@
 ﻿using ECommerceAPI.Application.Abstractions.Services;
+using ECommerceAPI.Application.UnitOfWorks;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -11,19 +12,18 @@ namespace ECommerceAPI.Application.Features.Queries.UserQueries.GetAllUsers
 {
     public class GetAllUserQueryHandler : IRequestHandler<GetAllUserQueryRequest, GetAllUserQueryResponse>
     {
-        readonly IUserService _userService;
-
-        public GetAllUserQueryHandler(IUserService userService)
+        readonly IServiceManager _serviceManager;
+        public GetAllUserQueryHandler(IServiceManager serviceManager)
         {
-            _userService = userService;
+            _serviceManager = serviceManager;
         }
 
         public async Task<GetAllUserQueryResponse> Handle(GetAllUserQueryRequest request, CancellationToken cancellationToken)
         {
             return new()
             {
-                Users = await _userService.GetAllUsersAsync(request.Page, request.Size),
-                TotalUsersCount = _userService.TotalUserCount
+                Users = await _serviceManager.UserService.GetAllUsersAsync(request.Page, request.Size),
+                TotalUsersCount = _serviceManager.UserService.TotalUserCount
             };
         }
             
