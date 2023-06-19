@@ -1,3 +1,4 @@
+using AspNetCoreRateLimit;
 using ECommerceAPI.API.Configurations.ColumnWriters;
 using ECommerceAPI.API.Extensions;
 using ECommerceAPI.API.Filters;
@@ -103,6 +104,24 @@ Logger log = new LoggerConfiguration()
     .CreateLogger();
 builder.Host.UseSerilog(log);
 
+
+builder.Services.AddMemoryCache();
+builder.Services.Configure<IpRateLimitOptions>(opts =>
+{
+    opts.GeneralRules = new List<RateLimitRule>() { new()
+    {
+       Endpoint="*",
+       Limit=3,
+       Period ="1m"
+    } };
+});
+builder.Services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>(); 
+builder.Services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>(); 
+builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>(); 
+builder.Services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
+
+
+
 var app = builder.Build();
 
 
@@ -113,7 +132,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.ConfigureExceptionHandler();
-
+app.UseIpRateLimiting();
 app.UseCors();
 app.UseStaticFiles();
 
