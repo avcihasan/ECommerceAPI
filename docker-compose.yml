@@ -1,0 +1,12 @@
+version: '3.4'
+
+services:
+  ecommercedb:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+  ecommerceapi.api:
+    image: ecommerceapiapi_image
+    build:
+      context: .
+      dockerfile: Presentation/ECommerceAPI.API/Dockerfile
+volumes:
+  ecommercedb_volume:

@@ -1,0 +1,25 @@
+version: '3.4'
+
+services:
+  ecommercedb:
+    container_name: ecommercedb
+    restart: always
+    ports:
+      - "1433:1433"
+    volumes:
+      - ecommercedb_volume:/var/opt/mssql
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Password12*
+  ecommerceapi.api:
+    container_name: ecommerceapi_container
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ConnectionStrings:SqlServer=Server=ecommercedb,1433;Database=ECommerceDb; User=sa; Password=Password12*;TrustServerCertificate=True 
+    ports:
+      - "5000:80"
+      - "5001:443"
+    depends_on:
+      - ecommercedb
+ 
