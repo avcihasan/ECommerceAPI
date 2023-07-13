@@ -9,9 +9,9 @@ namespace ECommerceAPI.Application.Features.Commands.UserCommands.LoginUser
 {
     public class LoginUserCommandHandler : IRequestHandler<LoginUserCommandRequest, LoginUserCommandResponse>
     {
-        readonly IServiceManager _serviceManager;
+        readonly IAuthService _serviceManager;
 
-        public LoginUserCommandHandler(IServiceManager serviceManager)
+        public LoginUserCommandHandler(IAuthService serviceManager)
         {
             _serviceManager = serviceManager;
         }
@@ -21,7 +21,7 @@ namespace ECommerceAPI.Application.Features.Commands.UserCommands.LoginUser
          
             return new LoginUserSuccessCommandResponse()
             {
-                Token = await _serviceManager.AuthService.LoginAsync(new() { UserNameOrEmail = request.UserNameOrEmail, Password = request.Password }, 10)
+                Token = await _serviceManager.LoginAsync(new() { UserNameOrEmail = request.UserNameOrEmail, Password = request.Password }, 10)
             };
         }
     }

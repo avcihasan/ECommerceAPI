@@ -17,14 +17,14 @@ namespace ECommerceAPI.Persistence.Services
     {
 
         readonly IRepositoryManager _repositoryManager;
-        readonly IServiceManager _serviceManager;
         readonly RoleManager<AppRole> _roleManager;
+        readonly IConfigurationService _configurationService;
 
-        public AuthorizationEndpointService(IRepositoryManager repositoryManager, RoleManager<AppRole> roleManager, IServiceManager serviceManager)
+        public AuthorizationEndpointService(IRepositoryManager repositoryManager, RoleManager<AppRole> roleManager, IConfigurationService configurationService)
         {
             _repositoryManager = repositoryManager;
             _roleManager = roleManager;
-            _serviceManager = serviceManager;
+            _configurationService = configurationService;
         }
 
         public async Task AssignRoleEndpointAsync(string[] roles, string controllerName, string code, Type type)
@@ -40,7 +40,7 @@ namespace ECommerceAPI.Persistence.Services
 
             if (endpoint == null)
             {
-                EndPointDto _endpoint = _serviceManager.ConfigurationService.GetAuthorizeDefinitionEndpoints(type)
+                EndPointDto _endpoint = _configurationService.GetAuthorizeDefinitionEndpoints(type)
                         .FirstOrDefault(m => m.Name == controllerName)
                         .EndPoints.FirstOrDefault(e => e.Code == code);
 

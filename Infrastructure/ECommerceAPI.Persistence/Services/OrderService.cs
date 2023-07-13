@@ -11,12 +11,12 @@ namespace ECommerceAPI.Persistence.Services
     public class OrderService : IOrderService
     {
         readonly IRepositoryManager _repositoryManager;
-        readonly IServiceManager _serviceManager;
+        readonly IBasketService _basketService;
 
-        public OrderService(IRepositoryManager repositoryManager, IServiceManager serviceManager)
+        public OrderService(IRepositoryManager repositoryManager, IBasketService basketService)
         {
             _repositoryManager = repositoryManager;
-            _serviceManager = serviceManager;
+            _basketService = basketService;
         }
 
 
@@ -28,7 +28,7 @@ namespace ECommerceAPI.Persistence.Services
                 Address = order.Address,
                 Description = order.Description,
                 Id = Guid.Parse(order.BasketId),
-                TotalPrice = await _serviceManager.BasketService.GetBasketTotalPrice(order.BasketId),
+                TotalPrice = await _basketService.GetBasketTotalPrice(order.BasketId),
                 OrderCode = GenerateOrderCode()
             }); ; ;
             await _repositoryManager.SaveAsync();

@@ -11,16 +11,16 @@ namespace ECommerceAPI.Application.Features.Commands.UserCommands.RefreshTokenLo
 {
     public class RefreshTokenLoginUserCommandHandler : IRequestHandler<RefreshTokenLoginUserCommandRequest, RefreshTokenLoginUserCommandResponse>
     {
-        readonly IServiceManager _serviceManager;
+        readonly IAuthService _serviceManager;
 
-        public RefreshTokenLoginUserCommandHandler(IServiceManager serviceManager)
+        public RefreshTokenLoginUserCommandHandler(IAuthService serviceManager)
         {
             _serviceManager = serviceManager;
         }
 
         public async Task<RefreshTokenLoginUserCommandResponse> Handle(RefreshTokenLoginUserCommandRequest request, CancellationToken cancellationToken)
         {
-            return new () { Token = await _serviceManager.AuthService.RefreshTokenLoginAsync(request.RefreshToken) };
+            return new () { Token = await _serviceManager.RefreshTokenLoginAsync(request.RefreshToken) };
         }
     }
 }

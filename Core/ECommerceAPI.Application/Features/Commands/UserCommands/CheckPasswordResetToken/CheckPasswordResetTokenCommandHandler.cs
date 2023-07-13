@@ -11,15 +11,15 @@ namespace ECommerceAPI.Application.Features.Commands.UserCommands.CheckPasswordR
 {
     public class CheckPasswordResetTokenCommandHandler : IRequestHandler<CheckPasswordResetTokenCommandRequest, CheckPasswordResetTokenCommandResponse>
     {
-        readonly IServiceManager _serviceManager;
+        readonly IAuthService _serviceManager;
 
-        public CheckPasswordResetTokenCommandHandler(IServiceManager serviceManager)
+        public CheckPasswordResetTokenCommandHandler(IAuthService serviceManager)
         {
             _serviceManager = serviceManager;
         }
 
         public async Task<CheckPasswordResetTokenCommandResponse> Handle(CheckPasswordResetTokenCommandRequest request, CancellationToken cancellationToken)
-            =>new() { State=await _serviceManager.AuthService.CheckPasswordResetTokenAsync(request.ResetToken, request.UserId) };
+            =>new() { State=await _serviceManager.CheckPasswordResetTokenAsync(request.ResetToken, request.UserId) };
         
     }
 }

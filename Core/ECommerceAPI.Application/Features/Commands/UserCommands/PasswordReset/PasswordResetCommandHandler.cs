@@ -11,16 +11,16 @@ namespace ECommerceAPI.Application.Features.Commands.UserCommands.PasswordReset
 {
     public class PasswordResetCommandHandler : IRequestHandler<PasswordResetCommandRequest, PasswordResetCommandResponse>
     {
-        readonly IServiceManager _serviceManager;
+        readonly IAuthService _serviceManager;
 
-        public PasswordResetCommandHandler(IServiceManager serviceManager)
+        public PasswordResetCommandHandler(IAuthService serviceManager)
         {
             _serviceManager = serviceManager;
         }
 
         public async Task<PasswordResetCommandResponse> Handle(PasswordResetCommandRequest request, CancellationToken cancellationToken)
         {
-           await _serviceManager.AuthService.PasswordResetAsync(request.Email);
+           await _serviceManager.PasswordResetAsync(request.Email);
             return new();
         }
     }

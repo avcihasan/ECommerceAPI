@@ -17,13 +17,13 @@ namespace ECommerceAPI.Persistence.Services
     public class ProductService : IProductService
     {
         readonly IRepositoryManager _repositoryManager;
-        readonly IServiceManager _serviceManager;
         readonly IMapper _mapper;
-        public ProductService(IRepositoryManager repositoryManager,IMapper mapper, IServiceManager serviceManager)
+        readonly IQRCodeService _qRCodeService;
+        public ProductService(IRepositoryManager repositoryManager, IMapper mapper, IQRCodeService qRCodeService)
         {
             _repositoryManager = repositoryManager;
             _mapper = mapper;
-            _serviceManager = serviceManager;
+            _qRCodeService = qRCodeService;
         }
 
         public async Task<bool> CreateProductAsync(CreateProductDto product)
@@ -65,7 +65,7 @@ namespace ECommerceAPI.Persistence.Services
             };
             string plainText = JsonSerializer.Serialize(plainObject);
 
-            return _serviceManager.QRCodeService.GenerateQRCode(plainText);
+            return _qRCodeService.GenerateQRCode(plainText);
         }
 
         public async Task<bool> RemoveProductByIdAsync(string id)
