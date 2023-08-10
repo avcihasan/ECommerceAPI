@@ -40,17 +40,14 @@ namespace ECommerceAPI.Persistence.Services
         public async Task<RoleDto> GetRoleByIdAsync(string id)
         {
            AppRole role= await _roleManager.FindByIdAsync(id);
-            if (role is null)
-                throw new Exception("Rol hatası");
-
-            return _mapper.Map<RoleDto>(role);
+            return role is null ? throw new Exception("Rol hatası") : _mapper.Map<RoleDto>(role);
         }
 
         public async Task<(List<RoleDto>, int)> GetRolesAsync(int page, int size)
         {
             var query = _roleManager.Roles;
 
-            IQueryable<AppRole> rolesQuery = null;
+            IQueryable<AppRole> rolesQuery ;
 
             if (page != -1 && size != -1)
                 rolesQuery = query.Skip(page * size).Take(size);

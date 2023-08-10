@@ -13,10 +13,17 @@ namespace ECommerceAPI.Application
             service.AddMediatR(typeof(ServiceRegistration));
             service.AddAutoMapper(typeof(ServiceRegistration));
 
-           
-
             service.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
             service.AddValidatorsFromAssemblyContaining(typeof(CreateProductValidator));
+
+
+
+
+
+
+
+
+
         }
     }
 }

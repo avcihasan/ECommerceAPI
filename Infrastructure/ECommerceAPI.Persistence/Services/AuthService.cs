@@ -40,8 +40,7 @@ namespace ECommerceAPI.Persistence.Services
         public async Task<TokenDto> LoginAsync(LoginUserDto loginUser, int tokenLifeMinute)
         {
             AppUser user = await _userManager.FindByEmailAsync(loginUser.UserNameOrEmail);
-            if (user == null)
-                user = await _userManager.FindByNameAsync(loginUser.UserNameOrEmail);
+            user ??= await _userManager.FindByNameAsync(loginUser.UserNameOrEmail);
             if (user == null)
                 throw new Exception("Girilen Bilgileri Kontrol Ediniz");
 

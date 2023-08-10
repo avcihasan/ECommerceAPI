@@ -11,23 +11,40 @@ using ECommerceAPI.Application.Repositories.ProductImageFileRepositories;
 using ECommerceAPI.Application.Repositories.ProductRepositories;
 using ECommerceAPI.Application.UnitOfWorks;
 using ECommerceAPI.Persistence.Contexts;
-using ECommerceAPI.Persistence.Repositories.BasketItemRepository;
-using ECommerceAPI.Persistence.Repositories.BasketRepository;
-using ECommerceAPI.Persistence.Repositories.CategoryRepositories;
-using ECommerceAPI.Persistence.Repositories.CompletedOrderRepositories;
-using ECommerceAPI.Persistence.Repositories.ControllerRepositories;
-using ECommerceAPI.Persistence.Repositories.EndpointRepositories;
-using ECommerceAPI.Persistence.Repositories.FileRepositories;
-using ECommerceAPI.Persistence.Repositories.InvoiceFileRepositories;
-using ECommerceAPI.Persistence.Repositories.OrderRepositories;
-using ECommerceAPI.Persistence.Repositories.ProductImageFileRepositories;
-using ECommerceAPI.Persistence.Repositories.ProductRepositories;
 
 namespace ECommerceAPI.Persistence.UnitOfWorks
 {
     public class RepositoryManager : IRepositoryManager
     {
         private readonly ECommerceAPIDbContext _context;
+
+        public RepositoryManager(ECommerceAPIDbContext context, ICategoryReadRepository categoryReadRepository, ICategoryWriteRepository categoryWriteRepository, IFileReadRepository fileReadRepository, IFileWriteRepository fileWriteRepository, IInvoiceFileReadRepository ınvoiceFileReadRepository, IInvoiceFileWriteRepository ınvoiceFileWriteRepository, IProductImageFileReadRepository productImageFileReadRepository, IProductImageFileWriteRepository productImageFileWriteRepository, IProductReadRepository productReadRepository, IProductWriteRepository productWriteRepository, IBasketReadRepository basketReadRepository, IBasketWriteRepository basketWriteRepository, IBasketItemReadRepository basketItemReadRepository, IBasketItemWriteRepository basketItemWriteRepository, IOrderWriteRepository orderWriteRepository, IOrderReadRepository orderReadRepository, ICompletedOrderReadRepository completedOrderReadRepository, ICompletedOrderWriteRepository completedOrderWriteRepository, IControllerReadRepository controllerReadRepository, IControllerWriteRepository controllerWriteRepository, IEndpointReadRepository endpointReadRepository, IEndpointWriteRepository endpointWriteRepository)
+        {
+            _context = context;
+            CategoryReadRepository = categoryReadRepository;
+            CategoryWriteRepository = categoryWriteRepository;
+            FileReadRepository = fileReadRepository;
+            FileWriteRepository = fileWriteRepository;
+            InvoiceFileReadRepository = ınvoiceFileReadRepository;
+            InvoiceFileWriteRepository = ınvoiceFileWriteRepository;
+            ProductImageFileReadRepository = productImageFileReadRepository;
+            ProductImageFileWriteRepository = productImageFileWriteRepository;
+            ProductReadRepository = productReadRepository;
+            ProductWriteRepository = productWriteRepository;
+            BasketReadRepository = basketReadRepository;
+            BasketWriteRepository = basketWriteRepository;
+            BasketItemReadRepository = basketItemReadRepository;
+            BasketItemWriteRepository = basketItemWriteRepository;
+            OrderWriteRepository = orderWriteRepository;
+            OrderReadRepository = orderReadRepository;
+            CompletedOrderReadRepository = completedOrderReadRepository;
+            CompletedOrderWriteRepository = completedOrderWriteRepository;
+            ControllerReadRepository = controllerReadRepository;
+            ControllerWriteRepository = controllerWriteRepository;
+            EndpointReadRepository = endpointReadRepository;
+            EndpointWriteRepository = endpointWriteRepository;
+        }
+
         public ICategoryReadRepository CategoryReadRepository { get; private set; }
         public ICategoryWriteRepository CategoryWriteRepository { get; private set; }
         public IFileReadRepository FileReadRepository { get; private set; }
@@ -50,35 +67,23 @@ namespace ECommerceAPI.Persistence.UnitOfWorks
         public IControllerWriteRepository ControllerWriteRepository { get; private set; }
         public IEndpointReadRepository EndpointReadRepository { get; private set; }
         public IEndpointWriteRepository EndpointWriteRepository { get; private set; }
-        public RepositoryManager(ECommerceAPIDbContext context)
-        {
-            _context = context;
-            CategoryReadRepository = new CategoryReadRepository(_context);
-            CategoryWriteRepository = new CategoryWriteRepository(_context);
-            FileReadRepository = new FileReadRepository(_context);
-            FileWriteRepository = new FileWriteRepository(_context);
-            InvoiceFileReadRepository = new InvoiceFileReadRepository(_context);
-            InvoiceFileWriteRepository = new InvoiceFileWriteRepository(_context);
-            ProductImageFileReadRepository = new ProductImageFileReadRepository(_context);
-            ProductImageFileWriteRepository = new ProductImageFileWriteRepository(_context);
-            ProductReadRepository = new ProductReadRepository(_context);
-            ProductWriteRepository = new ProductWriteRepository(_context);
-            BasketReadRepository = new BasketReadRepository(_context);
-            BasketWriteRepository = new BasketWriteRepository(_context);
-            BasketItemReadRepository = new BasketItemReadRepository(_context);
-            BasketItemWriteRepository = new BasketItemWriteRepository(_context);
-            OrderWriteRepository = new OrderWriteRepository(_context);
-            OrderReadRepository = new OrderReadRepository(_context);
-            CompletedOrderReadRepository = new CompletedOrderReadRepository(_context);
-            CompletedOrderWriteRepository = new CompletedOrderWriteRepository(_context);
-            ControllerReadRepository = new ControllerReadRepository(_context);
-            ControllerWriteRepository = new ControllerWriteRepository(_context);
-            EndpointWriteRepository = new EndpointWriteRepository(_context);
-            EndpointReadRepository = new EndpointReadRepository(_context);
-        }
-
+      
 
         public async Task SaveAsync()
             => await _context.SaveChangesAsync();
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _context.Dispose();
+            }
+        }
     }
 }
