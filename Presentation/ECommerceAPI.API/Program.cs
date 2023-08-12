@@ -9,7 +9,6 @@ using ECommerceAPI.Persistence;
 using ECommerceAPI.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
-
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add<ValidationFilter>();
@@ -18,7 +17,6 @@ builder.Services.AddControllers(options =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddCors(options => options.AddDefaultPolicy(
     policy => policy.WithOrigins("http://localhost:4200", "https://localhost:4200")
@@ -30,10 +28,9 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(
 builder.Services.AddStorage<LocalStorage>();
 
 builder.Services.AddPersistenceServices(builder.Configuration);
-builder.Services.AddApplicationServices();
+builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddInfrastructureServices();
 builder.Services.AddSignalRServices();
-
 builder.AddSeriLog();
 builder.Services.AddMemoryCache();
 builder.Services.AddRateLimit();

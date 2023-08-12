@@ -21,13 +21,16 @@ namespace ECommerceAPI.Infrastructure.Services.Storage.LocalStorage
         }
 
 
-        public async Task DeleteAsync(string path, string fileName)
-            => File.Delete($"{path}\\{fileName}");
+        public Task DeleteAsync(string path, string fileName)
+        {
+            File.Delete($"{path}\\{fileName}");
+            return Task.CompletedTask;
+        }
 
         public List<string> GetFiles(string path)
         {
             DirectoryInfo directory = new(path);
-            return directory.GetFiles().Select(d=>d.Name).ToList();    
+            return directory.GetFiles().Select(d => d.Name).ToList();
         }
 
         public bool HasFile(string path, string fileName)
@@ -48,7 +51,7 @@ namespace ECommerceAPI.Infrastructure.Services.Storage.LocalStorage
             }
 
             List<(string fileName, string path)> datas = new();
-       
+
             foreach (IFormFile file in files)
             {
                 string fileNewName = await FileRenameAsync(path, file.Name, HasFile);
@@ -58,11 +61,11 @@ namespace ECommerceAPI.Infrastructure.Services.Storage.LocalStorage
                 await CopyFileAsync($"{clientPath}\\{fileNewName}", file);
 
                 datas.Add((fileNewName, $"{path}/{fileNewName}"));
-            
+
             }
 
             return datas;
-       
+
         }
 
 

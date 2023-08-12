@@ -1,5 +1,7 @@
 ﻿using ECommerceAPI.Application.Abstractions.Services;
+using ECommerceAPI.Application.OptionsModels;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
@@ -8,14 +10,15 @@ namespace ECommerceAPI.Infrastructure.Services
 {
     public class MailService : IMailService
     {
+        readonly MailOptions _mailOptions;
         readonly IConfiguration _configuration;
-
-        public MailService(IConfiguration configuration)
+        public MailService(IOptions<MailOptions> options, IConfiguration configuration)
         {
+            _mailOptions = options.Value;
             _configuration = configuration;
         }
 
-    
+
 
         public async Task SendMailAsync(string to, string subject, string body, bool isBodyHtml = true)
         {
@@ -30,13 +33,13 @@ namespace ECommerceAPI.Infrastructure.Services
                 mail.To.Add(to);
             mail.Subject = subject;
             mail.Body = body;
-            mail.From = new(_configuration["Mail:Username"], "E-Ticaret", System.Text.Encoding.UTF8);
+            mail.From = new(_mailOptions.Username, "E-Ticaret", System.Text.Encoding.UTF8);
 
             SmtpClient smtp = new();
-            smtp.Credentials = new NetworkCredential(_configuration["Mail:Username"], _configuration["Mail:Password"]);
+            smtp.Credentials = new NetworkCredential(_mailOptions.Username, _mailOptions.Password);
             smtp.Port = 587;
             smtp.EnableSsl = true;
-            smtp.Host = _configuration["Mail:Host"];
+            smtp.Host = _mailOptions.Host;
             await smtp.SendMailAsync(mail);
         }
 

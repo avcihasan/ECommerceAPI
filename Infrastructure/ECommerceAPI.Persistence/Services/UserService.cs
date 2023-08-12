@@ -1,20 +1,13 @@
 ﻿using AutoMapper;
-using Azure.Core;
 using ECommerceAPI.Application.Abstractions.Services;
 using ECommerceAPI.Application.DTOs.UserDTOs;
-using ECommerceAPI.Application.Features.Commands.UserCommands.CreateUser;
 using ECommerceAPI.Application.UnitOfWorks;
 using ECommerceAPI.Domain.Entities;
 using ECommerceAPI.Domain.Entities.Identity;
-using ECommerceAPI.Persistence.UnitOfWorks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ECommerceAPI.Persistence.Services
 {
@@ -23,7 +16,6 @@ namespace ECommerceAPI.Persistence.Services
         private readonly IMapper _mapper;
         private readonly UserManager<AppUser> _userManager;
         readonly IRepositoryManager _repositoryManager;
-
         public int TotalUserCount => _userManager.Users.Count();
 
         public UserService(IMapper mapper, UserManager<AppUser> userManager, IRepositoryManager repositoryManager)

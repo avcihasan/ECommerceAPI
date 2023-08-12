@@ -1,7 +1,9 @@
 ﻿using ECommerceAPI.Application.Abstractions.Token;
 using ECommerceAPI.Application.DTOs.TokenDTOs;
+using ECommerceAPI.Application.OptionsModels;
 using ECommerceAPI.Domain.Entities.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -16,18 +18,18 @@ namespace ECommerceAPI.Infrastructure.Services.Token
 {
     public class TokenHandler : ITokenHandler
     {
-        private readonly IConfiguration _configuration;
+        readonly TokenOptions _tokenOptions; 
 
-        public TokenHandler(IConfiguration configuration)
+        public TokenHandler(IOptions<TokenOptions> options)
         {
-            _configuration = configuration;
+            _tokenOptions = options.Value;
         }
 
         public TokenDto CreateAccessToken(int minute, AppUser user)
         {
             TokenDto token = new();
             //securitykey in simetriğini alıyoruz 
-            SymmetricSecurityKey securityKey = new(Encoding.UTF8.GetBytes(_configuration["Token:SigninKey"]));
+            SymmetricSecurityKey securityKey = new(Encoding.UTF8.GetBytes(_tokenOptions.SigninKey));
             //şifrelenmiş kimliği oluşturuyoruz 
             SigningCredentials signingCredentials = new(securityKey,SecurityAlgorithms.HmacSha256);
 
@@ -35,8 +37,8 @@ namespace ECommerceAPI.Infrastructure.Services.Token
             token.Expiration = DateTime.Now.AddMinutes(minute);
 
             JwtSecurityToken jwtSecurityToken = new(
-                audience:_configuration["Token:Audience"],
-                issuer: _configuration["Token:Issuer"],
+                audience: _tokenOptions.Audience,
+                issuer: _tokenOptions.Issuer,
                 expires:token.Expiration,
                 notBefore:DateTime.Now,
                 signingCredentials:signingCredentials,

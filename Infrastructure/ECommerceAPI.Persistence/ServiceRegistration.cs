@@ -44,7 +44,7 @@ namespace ECommerceAPI.Persistence
     {
         public static void AddPersistenceServices(this IServiceCollection service, IConfiguration configuration)
         {
-            service.AddDbContext<ECommerceAPIDbContext>(options => options.UseSqlServer(Configuration.ConnectionString));
+            service.AddDbContext<ECommerceAPIDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("SqlServer")));
             service.AddIdentity<AppUser, AppRole>(options =>
             {
                 options.Password.RequiredLength = 3;
@@ -54,6 +54,8 @@ namespace ECommerceAPI.Persistence
                 options.Password.RequireUppercase = false;
             }).AddEntityFrameworkStores<ECommerceAPIDbContext>()
             .AddDefaultTokenProviders().AddDefaultTokenProviders(); ;
+
+            
 
             service.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer("Admin", options =>

@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using ECommerceAPI.Application.OptionsModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace ECommerceAPI.API.Controllers
 {
@@ -7,17 +9,16 @@ namespace ECommerceAPI.API.Controllers
     [ApiController]
     public class FilesController : ControllerBase
     {
-        readonly IConfiguration _configuration;
-
-        public FilesController(IConfiguration configuration)
+        readonly StorageOptions _storage;
+        public FilesController(IOptions<StorageOptions> options )
         {
-            _configuration = configuration;
+            _storage = options.Value;
         }
 
         [HttpGet("[action]")]
         public IActionResult GetBaseStorageUrl()
         {
-            return Ok(new{ Url= _configuration["BaseStorageUrl"] });
+            return Ok(new{ Url= _storage.BaseStorageUrl });
         } 
     }
 }
