@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using ECommerceAPI.Application.Features.Commands.UserCommands.CheckPasswordResetToken;
+﻿using ECommerceAPI.Application.Features.Commands.UserCommands.CheckPasswordResetToken;
 using ECommerceAPI.Application.Features.Commands.UserCommands.LoginUser;
 using ECommerceAPI.Application.Features.Commands.UserCommands.PasswordReset;
 using ECommerceAPI.Application.Features.Commands.UserCommands.RefreshTokenLoginUser;

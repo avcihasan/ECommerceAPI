@@ -7,8 +7,15 @@ using System.Threading.Tasks;
 
 namespace ECommerceAPI.Domain.Entities.Identity
 {
-    public class AppUser : IdentityUser<string>
+    public class AppUser : IdentityUser<Guid>
     {
+        public AppUser()
+        {
+            Baskets = new HashSet<Basket>();
+            Messages = new HashSet<Message>();
+            FavProducts = new HashSet<FavoriteProduct>();
+        }
+
         public string Name { get; set; }
         public string Surname { get; set; }
 
@@ -16,5 +23,7 @@ namespace ECommerceAPI.Domain.Entities.Identity
         public DateTime? RefreshTokenEndDate { get; set; }
 
         public ICollection<Basket> Baskets { get; set; }
+        public ICollection<Message> Messages { get; set; }
+        public ICollection<FavoriteProduct> FavProducts { get; set; }
     }
 }

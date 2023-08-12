@@ -15,7 +15,7 @@ namespace ECommerceAPI.Persistence.UnitOfWorks
 {
     public class ServiceManager : IServiceManager
     {
-        public ServiceManager(IAuthorizationEndpointService authorizationEndpointService, IAuthService authService, IBasketService basketService, ICategoryService categoryService, IConfigurationService configurationService, IMailService mailService, IOrderService orderService, IProductService productService, IQRCodeService qRCodeService, IRoleService roleService, IUserService userService, IOrderHubService orderHubService, IProductHubServcie productHubService, ITokenHandler tokenHandler, IStorageService storageService)
+        public ServiceManager(IAuthorizationEndpointService authorizationEndpointService, IAuthService authService, IBasketService basketService, ICategoryService categoryService, IConfigurationService configurationService, IMailService mailService, IOrderService orderService, IProductService productService, IQRCodeService qRCodeService, IRoleService roleService, IUserService userService, IOrderHubService orderHubService, IProductHubServcie productHubService, ITokenHandler tokenHandler, IStorageService storageService, IMessageService messageService)
         {
             AuthorizationEndpointService = authorizationEndpointService;
             AuthService = authService;
@@ -32,6 +32,7 @@ namespace ECommerceAPI.Persistence.UnitOfWorks
             ProductHubService = productHubService;
             TokenHandler = tokenHandler;
             StorageService = storageService;
+            MessageService = messageService;
         }
 
         public IAuthorizationEndpointService AuthorizationEndpointService { get; private set; }
@@ -62,5 +63,6 @@ namespace ECommerceAPI.Persistence.UnitOfWorks
         public ITokenHandler TokenHandler { get; private set; }
 
         public IStorageService StorageService { get; private set; }
+        public IMessageService MessageService { get; private set; }
     }
 }

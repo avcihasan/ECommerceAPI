@@ -37,7 +37,7 @@ namespace ECommerceAPI.Persistence.Services
         {
             AppUser addUser = _mapper.Map<AppUser>(createUser);
 
-            addUser.Id = Guid.NewGuid().ToString();
+            addUser.Id = Guid.NewGuid();
             IdentityResult result = await _userManager.CreateAsync(addUser, createUser.Password);
 
             CreateUserResponseDto createUserResponseDto = new() { Succeeded = result.Succeeded };

@@ -28,6 +28,7 @@ namespace ECommerceAPI.Application.UnitOfWorks
         IProductHubServcie ProductHubService { get; }
         ITokenHandler TokenHandler { get; }
         IStorageService StorageService { get; }
+        IMessageService MessageService { get; }
 
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 
 namespace ECommerceAPI.Persistence.Contexts
 {
-    public class ECommerceAPIDbContext : IdentityDbContext<AppUser,AppRole,string>
+    public class ECommerceAPIDbContext : IdentityDbContext<AppUser, AppRole, Guid>
     {
         public ECommerceAPIDbContext(DbContextOptions options) : base(options)
         { }
@@ -14,14 +14,18 @@ namespace ECommerceAPI.Persistence.Contexts
         public DbSet<Order> Orders { get; set; }
         public DbSet<CompletedOrder> ComplatedOrders { get; set; }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<ECommerceAPI.Domain.Entities.File> Files { get; set; } 
+        public DbSet<ECommerceAPI.Domain.Entities.File> Files { get; set; }
         public DbSet<ProductImageFile> ProductImageFiles { get; set; }
         public DbSet<InvoiceFile> InvoiceFiles { get; set; }
         public DbSet<Controller> Controllers { get; set; }
         public DbSet<Endpoint> Endpoints { get; set; }
 
 
-
+        protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+        {
+            configurationBuilder.Properties<decimal>()
+                                    .HavePrecision(18, 2);
+        }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
@@ -31,15 +35,15 @@ namespace ECommerceAPI.Persistence.Contexts
             {
                 if (data.Entity as BaseEntity != null)
                 {
-                    //if (data.State == EntityState.Added)
-                    //{
-                    //    data.Entity.CreatedDate = DateTime.Now;
-                    //}
-                    //if (data.State == EntityState.Modified)
-                    //{
-                    //    data.Entity.UpdatedDate = DateTime.Now;
+                    if (data.State == EntityState.Added)
+                    {
+                        data.Entity.CreatedDate = DateTime.Now;
+                    }
+                    if (data.State == EntityState.Modified)
+                    {
+                        data.Entity.UpdatedDate = DateTime.Now;
 
-                    //}
+                    }
                     _ = data.State switch
                     {
                         EntityState.Added => data.Entity.CreatedDate = DateTime.UtcNow,
@@ -51,7 +55,7 @@ namespace ECommerceAPI.Persistence.Contexts
             }
             return await base.SaveChangesAsync(cancellationToken);
         }
-       
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<CompletedOrder>()
@@ -75,8 +79,21 @@ namespace ECommerceAPI.Persistence.Contexts
                 .HasForeignKey<Order>(x => x.Id);
 
 
+            modelBuilder.Entity<FavoriteProduct>()
+                .HasKey(k => new { k.ProductId, k.UserId });
+
+            modelBuilder.Entity<Product>()
+                .HasMany(x => x.FavUsers)
+                .WithOne(x => x.Product)
+                .HasForeignKey(x => x.ProductId);
+            modelBuilder.Entity<AppUser>()
+                .HasMany(x => x.FavProducts)
+                .WithOne(x => x.User)
+                .HasForeignKey(x => x.UserId);
+
+
             modelBuilder.Entity<ProductCategory>()
-                .HasKey(key => new{ key.ProductId, key.CategoryId });
+                .HasKey(key => new { key.ProductId, key.CategoryId });
 
             modelBuilder.Entity<Product>()
                 .HasMany(p => p.Categories)

@@ -8,8 +8,10 @@ using ECommerceAPI.Application.Features.Commands.ProdcutImageFileCommands.Delete
 using ECommerceAPI.Application.Features.Commands.ProdcutImageFileCommands.UploadProductImage;
 using ECommerceAPI.Application.Features.Commands.ProductCommands.CreateProduct;
 using ECommerceAPI.Application.Features.Commands.ProductCommands.ProductAddToCategory;
+using ECommerceAPI.Application.Features.Commands.ProductCommands.ProductAddToFavorites;
 using ECommerceAPI.Application.Features.Commands.ProductCommands.RemoveByIdProduct;
 using ECommerceAPI.Application.Features.Commands.ProductCommands.UpdateProduct;
+using ECommerceAPI.Application.Features.Commands.ProductCommands.UpdateProductPrice;
 using ECommerceAPI.Application.Features.Commands.ProductCommands.UpdateStockQrCodeToProduct;
 using ECommerceAPI.Application.Features.Queries.ProductImageFileQueries.GetProductImages;
 using ECommerceAPI.Application.Features.Queries.ProductQueries.GetAllProducts;
@@ -123,5 +125,12 @@ namespace ECommerceAPI.API.Controllers
         [HttpPut("[action]")]
         public async Task<IActionResult> UpdateStockQrCodeToProduct(UpdateStockQrCodeToProductCommandRequest request)
             => Ok(await _mediator.Send(request));
+
+        [HttpPut("[action]")]
+        public async Task<IActionResult> UpdateProductPrice(UpdateProductPriceCommandRequest request)
+           => Ok(await _mediator.Send(request));
+        [HttpPost("[action]")]
+        public async Task<IActionResult> ProductAddToFavorites(ProductAddToFavoritesCommandRequest request)
+           => Ok(await _mediator.Send(request));
     }
 }

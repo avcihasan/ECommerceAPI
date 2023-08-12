@@ -8,6 +8,7 @@ using ECommerceAPI.Application.Repositories.ControllerRepositories;
 using ECommerceAPI.Application.Repositories.EndpointRepositories;
 using ECommerceAPI.Application.Repositories.FileRepositories;
 using ECommerceAPI.Application.Repositories.InvoiceFileRepositories;
+using ECommerceAPI.Application.Repositories.MessageRepositories;
 using ECommerceAPI.Application.Repositories.OrderRepositories;
 using ECommerceAPI.Application.Repositories.ProductImageFileRepositories;
 using ECommerceAPI.Application.Repositories.ProductRepositories;
@@ -22,6 +23,7 @@ using ECommerceAPI.Persistence.Repositories.ControllerRepositories;
 using ECommerceAPI.Persistence.Repositories.EndpointRepositories;
 using ECommerceAPI.Persistence.Repositories.FileRepositories;
 using ECommerceAPI.Persistence.Repositories.InvoiceFileRepositories;
+using ECommerceAPI.Persistence.Repositories.MessageRepositories;
 using ECommerceAPI.Persistence.Repositories.OrderRepositories;
 using ECommerceAPI.Persistence.Repositories.ProductImageFileRepositories;
 using ECommerceAPI.Persistence.Repositories.ProductRepositories;
@@ -82,6 +84,7 @@ namespace ECommerceAPI.Persistence
             service.AddScoped<IAuthorizationEndpointService, AuthorizationEndpointService>();
             service.AddScoped<IProductService, ProductService>();
             service.AddScoped<ICategoryService, CategoryService>();
+            service.AddScoped<IMessageService, MessageService>();
 
             service.AddScoped<IEndpointWriteRepository, EndpointWriteRepository>();
             service.AddScoped<IEndpointReadRepository, EndpointReadRepository>();
@@ -105,7 +108,8 @@ namespace ECommerceAPI.Persistence
             service.AddScoped<ICompletedOrderWriteRepository, CompletedOrderWriteRepository>();
             service.AddScoped<IControllerReadRepository, ControllerReadRepository>();
             service.AddScoped<IControllerWriteRepository, ControllerWriteRepository>();
-
+            service.AddScoped<IMessageReadRepository, MessageReadRepository>();
+            service.AddScoped<IMessageWriteRepository, MessageWriteRepository>();
 
             service.AddScoped<IRepositoryManager, RepositoryManager>();
             service.AddScoped<IServiceManager, ServiceManager>();

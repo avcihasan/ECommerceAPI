@@ -94,7 +94,7 @@ namespace ECommerceAPI.Persistence.Services
                 byte[] tokenBytes = Encoding.UTF8.GetBytes(resetToken);
                 resetToken = WebEncoders.Base64UrlEncode(tokenBytes);
 
-                await _mailService.SendResetPasswordMailAsync(user.Email, user.Id, resetToken);
+                await _mailService.SendResetPasswordMailAsync(user.Email, user.Id.ToString(), resetToken);
             }
         }
     }

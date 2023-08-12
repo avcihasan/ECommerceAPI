@@ -11,7 +11,6 @@ namespace ECommerceAPI.API.Controllers
     public class AuthorizationEndpointsController : ControllerBase
     {
         readonly IMediator  _mediator;
-
         public AuthorizationEndpointsController(IMediator mediator)
         {
             _mediator = mediator;

@@ -1,4 +1,5 @@
 ﻿using ECommerceAPI.Application.DTOs.ProductDTOs;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,5 +18,7 @@ namespace ECommerceAPI.Application.Abstractions.Services
         Task<bool> UpdateProductAsync(UpdateProductDto product);
         Task<byte[]> QrCodeToProductAsync(string productId);
         Task StockUpdateToProductAsync(string productId, int stock);
+        Task UpdateProductPriceAsync(string productId, decimal newPrice);
+        Task ProductAddToFavoritesAsync(string productId, string userId);
     }
 }

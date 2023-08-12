@@ -29,7 +29,7 @@ namespace ECommerceAPI.Persistence.Repositories.ProductRepositories
 
         public async Task<Product> GetByIdProductAllPropertiesAsync(string id, bool tracking = true)
         {
-            var products = _dbSet.Include(c => c.Categories).Include(f=>f.ProductImageFiles);
+            var products = _dbSet.Include(c => c.Categories).Include(f=>f.ProductImageFiles).Include(x=>x.FavUsers);
             if (tracking == false)
             {
                 products.AsNoTracking();

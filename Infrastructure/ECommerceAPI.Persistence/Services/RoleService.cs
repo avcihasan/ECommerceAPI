@@ -25,7 +25,7 @@ namespace ECommerceAPI.Persistence.Services
 
         public async Task CreateRoleAsync(string name)
         {
-            IdentityResult result= await  _roleManager.CreateAsync(new() { Id=Guid.NewGuid().ToString(),Name=name});
+            IdentityResult result= await  _roleManager.CreateAsync(new() { Id=Guid.NewGuid(),Name=name});
             if (!result.Succeeded)
                 throw new Exception("Rol oluşturma hatası");
         }

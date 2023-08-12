@@ -7,15 +7,11 @@ using System.Threading.Tasks;
 
 namespace ECommerceAPI.Domain.Entities
 {
-    public class Basket:BaseEntity
+    public class Message : BaseEntity
     {
-        public Guid AppUserId { get; set; }
+        public string Subject { get; set; }
+        public string Body { get; set; }
+        public Guid UserId { get; set; }
         public AppUser User { get; set; }
-
-
-        public ICollection<BasketItem> BasketItems { get; set; }
-
-        public Order Order { get; set; }
-
     }
 }
