@@ -3,6 +3,7 @@ using ECommerceAPI.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
+using System.Reflection;
 
 namespace ECommerceAPI.Persistence.Contexts
 {
@@ -58,63 +59,8 @@ namespace ECommerceAPI.Persistence.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<CompletedOrder>()
-                .HasKey(x => x.Id);
-            modelBuilder.Entity<CompletedOrder>()
-                .HasOne(x => x.Order)
-                .WithOne(x => x.ComplatedOrder)
-                .HasForeignKey<CompletedOrder>(x => x.Id);
-
-
-            modelBuilder.Entity<Order>()
-              .HasIndex(o => o.OrderCode)
-              .IsUnique();
-
-            modelBuilder.Entity<Order>()
-                .HasKey(x => x.Id);
-
-            modelBuilder.Entity<Order>()
-                .HasOne(x => x.Basket)
-                .WithOne(x => x.Order)
-                .HasForeignKey<Order>(x => x.Id);
-
-
-            modelBuilder.Entity<FavoriteProduct>()
-                .HasKey(k => new { k.ProductId, k.UserId });
-
-            modelBuilder.Entity<Product>()
-                .HasMany(x => x.FavUsers)
-                .WithOne(x => x.Product)
-                .HasForeignKey(x => x.ProductId);
-            modelBuilder.Entity<AppUser>()
-                .HasMany(x => x.FavProducts)
-                .WithOne(x => x.User)
-                .HasForeignKey(x => x.UserId);
-
-
-            modelBuilder.Entity<ProductCategory>()
-                .HasKey(key => new { key.ProductId, key.CategoryId });
-
-            modelBuilder.Entity<Product>()
-                .HasMany(p => p.Categories)
-                .WithOne(p => p.Product)
-                .HasForeignKey(p => p.ProductId);
-
-            modelBuilder.Entity<Category>()
-                .HasMany(c => c.Products)
-                .WithOne(c => c.Category)
-                .HasForeignKey(c => c.CategoryId);
-
-            modelBuilder.Entity<ProductDetail>()
-                .HasKey(key => key.Id);
-
-            modelBuilder.Entity<Product>()
-                .HasOne(x => x.ProductDetails)
-                .WithOne(x => x.Product)
-                .HasForeignKey<ProductDetail>(x => x.Id);
-
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             base.OnModelCreating(modelBuilder);
-
         }
 
     }
