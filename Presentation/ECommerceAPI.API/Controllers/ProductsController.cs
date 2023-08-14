@@ -1,6 +1,4 @@
-﻿using Azure.Core;
-using ECommerceAPI.Application.Abstractions.Services;
-using ECommerceAPI.Application.Attributes;
+﻿using ECommerceAPI.Application.Attributes;
 using ECommerceAPI.Application.Consts;
 using ECommerceAPI.Application.Enums;
 using ECommerceAPI.Application.Features.Commands.ProdcutImageFileCommands.ChangeShowcaseProductImage;

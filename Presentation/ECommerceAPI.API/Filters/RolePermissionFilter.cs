@@ -20,7 +20,7 @@ namespace ECommerceAPI.API.Filters
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var name = context.HttpContext.User.Identity?.Name;
-            if (!string.IsNullOrEmpty(name) && name != "hasan")
+            if (!string.IsNullOrEmpty(name) && name != "avci")
             {
                 var descriptor = context.ActionDescriptor as ControllerActionDescriptor;
                 var attribute = descriptor.MethodInfo.GetCustomAttribute(typeof(AuthorizeDefinitionAttribute)) as AuthorizeDefinitionAttribute;

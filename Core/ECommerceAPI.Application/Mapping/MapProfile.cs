@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ECommerceAPI.Application.DTOs.BasketItemDTOs;
 using ECommerceAPI.Application.DTOs.CategoryDTOs;
+using ECommerceAPI.Application.DTOs.MessageDTOs;
 using ECommerceAPI.Application.DTOs.OrderDTOs;
 using ECommerceAPI.Application.DTOs.ProductDTOs;
 using ECommerceAPI.Application.DTOs.RoleDTOs;
@@ -9,6 +10,7 @@ using ECommerceAPI.Application.Features.Commands.BasketCommands.AddItemToBasket;
 using ECommerceAPI.Application.Features.Commands.BasketCommands.UpdateQuantity;
 using ECommerceAPI.Application.Features.Commands.CategoryCommands.CreateCategory;
 using ECommerceAPI.Application.Features.Commands.CategoryCommands.UpdateCategory;
+using ECommerceAPI.Application.Features.Commands.MessageCommands;
 using ECommerceAPI.Application.Features.Commands.ProductCommands.CreateProduct;
 using ECommerceAPI.Application.Features.Commands.ProductCommands.UpdateProduct;
 using ECommerceAPI.Application.Features.Commands.UserCommands.CreateUser;
@@ -63,7 +65,10 @@ namespace ECommerceAPI.Application.Mapping
 
             CreateMap<AppRole, RoleDto>();
             CreateMap<RoleDto, GetByIdRoleQueryResponse>();
-            CreateMap<RoleDto, GetAllRolesQueryResponse>();
+            CreateMap<RoleDto, GetAllRolesQueryResponse>(); 
+
+            CreateMap<CreateMessageCommandRequest, SendMessageDto>(); 
+            CreateMap<Message, MessageDto>();
 
 
 

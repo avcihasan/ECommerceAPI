@@ -10,5 +10,6 @@ namespace ECommerceAPI.Application.Abstractions.Services
     public interface IMessageService
     {
         Task SendMessageAsync(SendMessageDto sendMessageDto);
+        Task<List<MessageDto>> GetAllMessagesByUserNameAsync();
     }
 }
